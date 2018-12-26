@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+
+  postgres-db:
+    container_name: postgres
+    image: postgres:9.6.10
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  pgadmin4:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    links:
+      - postgres-db:postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'postgres'
+      PGADMIN_DEFAULT_PASSWORD: 'postgres'
+    volumes:
+      - './repository/src/main/resources:/var/lib/pgadmin/storage/postgres'
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+# does not works properly
+  jetty-server:
+    container_name: jetty
+    image: jetty:9.4.12
+    links:
+      - postgres-db:postgres
+    restart: unless-stopped
+    volumes:
+      - './jetty/resources:/var/lib/jetty/resources'
+      - './jetty/webapps:/var/lib/jetty/webapps'
+      - './logs/jetty:/var/lib/jetty/logs/'
+    ports:
+      - "8686:8686"
+
+volumes:
+  data:
+    driver: local
