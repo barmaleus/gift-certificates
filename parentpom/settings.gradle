@@ -1,0 +1,8 @@
+rootProject.name = 'parentpom'
+include ':repository'
+include ':service'
+include ':view'
+
+project(':repository').projectDir = "$rootDir/../repository" as File
+project(':service').projectDir = "$rootDir/../service" as File
+project(':view').projectDir = "$rootDir/../view" as File

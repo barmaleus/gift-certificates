@@ -22,12 +22,12 @@ public class TagTest {
     @Autowired
     private TagRepository repository;
 
-    //todo always return true even if not creates tag
     @Test
     public void createTagTest() {
         Tag tag = new Tag();
         tag.setName("tratatag");
-        repository.create(tag);
+        String path = repository.create(tag);
+        Assert.assertEquals("/tag/tratatag", path);
     }
 
     @Test

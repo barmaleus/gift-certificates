@@ -1,5 +1,6 @@
 **Server application for Gift Certificates system with Certificate and Tag entities.**
 
+**1 step**
 System exposes REST API:
 - CRD operations for Tag
 - CRUD operations for Certificate, search by part of name/description and by tag
@@ -20,3 +21,6 @@ There are no:
 - Sprig Boot
 - JPA/Hibernate
 - Lombok
+
+**2 step**
+Maven changed to Gradle
