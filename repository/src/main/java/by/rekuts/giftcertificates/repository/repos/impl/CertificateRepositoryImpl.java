@@ -1,6 +1,5 @@
 package by.rekuts.giftcertificates.repository.repos.impl;
 
-import by.rekuts.giftcertificates.repository.CustomConnectionPool;
 import by.rekuts.giftcertificates.repository.DatabaseLabelNames;
 import by.rekuts.giftcertificates.repository.QueryToDatabase;
 import by.rekuts.giftcertificates.repository.domain.Certificate;
@@ -26,8 +25,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     @Autowired
     DataSource dataSource;
-    @Autowired
-    CustomConnectionPool connectionPool;
 
     private Connection connection = null;
     private PreparedStatement preparedStatement;
@@ -50,8 +47,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
             if (resultSet.next()) {
                 createdCertificateId = resultSet.getInt(1);
             }
-            connectionPool.returnConnectionToThePool(connection);
-            connection = null;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Can't insert new certificate to database. ", e);
         }
@@ -70,8 +65,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
             preparedStatement.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
             preparedStatement.setInt(6, certificate.getCertificateId());
             preparedStatement.executeUpdate();
-            connectionPool.returnConnectionToThePool(connection);
-            connection = null;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Can't update certificate in database. Id: " + certificate.getCertificateId(), e);
         }
@@ -84,8 +77,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
             preparedStatement = connection.prepareStatement(QueryToDatabase.DELETE_CERT.getQuery());
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
-            connectionPool.returnConnectionToThePool(connection);
-            connection = null;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Can't delete certificate from database. Certificate id: " + id, e);
         }
@@ -121,8 +112,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
                 certificate.setExpirationDays(expiration);
                 resultList.add(certificate);
             }
-            connectionPool.returnConnectionToThePool(connection);
-            connection = null;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Can't select certificates from database. " + e);
         }

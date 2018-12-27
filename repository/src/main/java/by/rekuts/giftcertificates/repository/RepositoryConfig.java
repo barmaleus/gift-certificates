@@ -2,6 +2,8 @@ package by.rekuts.giftcertificates.repository;
 
 import com.opentable.db.postgres.embedded.FlywayPreparer;
 import com.opentable.db.postgres.embedded.PreparedDbProvider;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +15,6 @@ import java.sql.SQLException;
 @Configuration
 @ComponentScan(basePackages = "by.rekuts.giftcertificates.repository")
 public class RepositoryConfig {
-
-    @Bean
-    @Profile("release")
-    public DataSource getReleaseDataSource() {
-        return new CustomDataSource();
-    }
 
     @Bean
     @Profile("debug")
@@ -35,7 +31,14 @@ public class RepositoryConfig {
     }
 
     @Bean
-    public CustomConnectionPool getConnectionPool() {
-        return CustomConnectionPool.getInstance();
+    @Profile("release")
+    public DataSource getReleaseDataSource() {
+        HikariConfig config = new HikariConfig();
+        config.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
+        config.setUsername("postgres");
+        config.setPassword("postgres");
+        config.addDataSourceProperty("databaseName", "gcerts");
+        config.addDataSourceProperty("serverName", "127.0.0.1");
+        return new HikariDataSource(config);
     }
 }

@@ -1,6 +1,5 @@
 package by.rekuts.giftcertificates.repository.repos.impl;
 
-import by.rekuts.giftcertificates.repository.CustomConnectionPool;
 import by.rekuts.giftcertificates.repository.DatabaseLabelNames;
 import by.rekuts.giftcertificates.repository.QueryToDatabase;
 import by.rekuts.giftcertificates.repository.domain.Tag;
@@ -27,8 +26,6 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Autowired
     DataSource dataSource;
-    @Autowired
-    CustomConnectionPool connectionPool;
 
     private Connection connection = null;
     private PreparedStatement preparedStatement;
@@ -41,8 +38,6 @@ public class TagRepositoryImpl implements TagRepository {
             preparedStatement = connection.prepareStatement(QueryToDatabase.CREATE_TAG.getQuery());
             preparedStatement.setString(1, tag.getName());
             preparedStatement.executeUpdate();
-            connectionPool.returnConnectionToThePool(connection);
-            connection = null;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Can't insert new tag to database. ", e);
         }
@@ -57,8 +52,6 @@ public class TagRepositoryImpl implements TagRepository {
             preparedStatement.setString(1, tag.getName());
             preparedStatement.setInt(2, tag.getTagId());
             preparedStatement.executeUpdate();
-            connectionPool.returnConnectionToThePool(connection);
-            connection = null;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Can't update tag in database. Id: " + tag.getTagId(), e);
         }
@@ -71,8 +64,6 @@ public class TagRepositoryImpl implements TagRepository {
             preparedStatement = connection.prepareStatement(QueryToDatabase.DELETE_TAG.getQuery());
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
-            connectionPool.returnConnectionToThePool(connection);
-            connection = null;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Can't delete tag from database. Tag id: " + id, e);
         }
@@ -94,8 +85,6 @@ public class TagRepositoryImpl implements TagRepository {
                 tag.setName(tagName);
                 resultList.add(tag);
             }
-            connectionPool.returnConnectionToThePool(connection);
-            connection = null;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Can't select tags from database. " + e);
         }
