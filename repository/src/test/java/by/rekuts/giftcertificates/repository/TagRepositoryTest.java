@@ -2,6 +2,7 @@ package by.rekuts.giftcertificates.repository;
 
 import by.rekuts.giftcertificates.repository.domain.Tag;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
+import by.rekuts.giftcertificates.repository.repos.impl.TagRepositoryImpl;
 import by.rekuts.giftcertificates.repository.specs.AllTagsSpecification;
 import by.rekuts.giftcertificates.repository.specs.OneTagByNameSpecification;
 import org.junit.Assert;
@@ -10,14 +11,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = RepositoryConfig.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {TagRepositoryImpl.class, TestConfig.class})
 @ActiveProfiles("debug")
-public class TagTest {
+public class TagRepositoryTest {
 
     @Autowired
     private TagRepository repository;

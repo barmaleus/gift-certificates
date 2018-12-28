@@ -28,20 +28,6 @@ services:
       - "80:80"
     restart: unless-stopped
 
-# does not works properly
-  jetty-server:
-    container_name: jetty
-    image: jetty:9.4.12
-    links:
-      - postgres-db:postgres
-    restart: unless-stopped
-    volumes:
-      - './jetty/resources:/var/lib/jetty/resources'
-      - './jetty/webapps:/var/lib/jetty/webapps'
-      - './logs/jetty:/var/lib/jetty/logs/'
-    ports:
-      - "8686:8686"
-
 volumes:
   data:
     driver: local

@@ -24,12 +24,17 @@ public class TagRepositoryImpl implements TagRepository {
     private static final Logger LOGGER = LogManager.getLogger(TagRepositoryImpl.class.getName());
     private static final String BASE_TAG_PATH = "/tag";
 
-    @Autowired
+    final
     DataSource dataSource;
 
     private Connection connection = null;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
+
+    @Autowired
+    public TagRepositoryImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public String create(Tag tag) {

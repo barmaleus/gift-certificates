@@ -23,12 +23,16 @@ public class CertificateRepositoryImpl implements CertificateRepository {
     private static final Logger LOGGER = LogManager.getLogger(TagRepositoryImpl.class.getName());
     private static final String BASE_CERTIFICATE_PATH = "/certificate";
 
-    @Autowired
-    DataSource dataSource;
+    private final DataSource dataSource;
 
     private Connection connection = null;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
+
+    @Autowired
+    public CertificateRepositoryImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public String create(Certificate certificate) {

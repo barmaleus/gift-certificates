@@ -2,6 +2,7 @@ package by.rekuts.giftcertificates.repository;
 
 import by.rekuts.giftcertificates.repository.domain.Certificate;
 import by.rekuts.giftcertificates.repository.repos.CertificateRepository;
+import by.rekuts.giftcertificates.repository.repos.impl.CertificateRepositoryImpl;
 import by.rekuts.giftcertificates.repository.specs.AllCertsSpecification;
 import by.rekuts.giftcertificates.repository.specs.OneCertificateByIdSpecification;
 import by.rekuts.giftcertificates.repository.specs.SearchCertsSpecification;
@@ -12,15 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = RepositoryConfig.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {CertificateRepositoryImpl.class, TestConfig.class})
 @ActiveProfiles("debug")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CertificateRepositoryTest {
