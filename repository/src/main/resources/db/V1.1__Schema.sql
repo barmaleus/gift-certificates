@@ -40,7 +40,7 @@ ALTER TABLE public.gift_certificate_id_seq OWNER TO postgres;
 ALTER SEQUENCE public.gift_certificate_id_seq OWNED BY public.gift_certificate.id;
 
 CREATE TABLE public.gift_tag (
-    tag_id integer NOT NULL,
+    id integer NOT NULL,
     name text NOT NULL
 );
 
@@ -55,7 +55,7 @@ CREATE SEQUENCE public.gift_tag_id_seq
 
 ALTER TABLE public.gift_tag_id_seq OWNER TO postgres;
 
-ALTER SEQUENCE public.gift_tag_id_seq OWNED BY public.gift_tag.tag_id;
+ALTER SEQUENCE public.gift_tag_id_seq OWNED BY public.gift_tag.id;
 
 CREATE TABLE public.tag_certificate (
     tag_id integer NOT NULL,
@@ -66,7 +66,7 @@ ALTER TABLE public.tag_certificate OWNER TO postgres;
 
 ALTER TABLE ONLY public.gift_certificate ALTER COLUMN id SET DEFAULT nextval('public.gift_certificate_id_seq'::regclass);
 
-ALTER TABLE ONLY public.gift_tag ALTER COLUMN tag_id SET DEFAULT nextval('public.gift_tag_id_seq'::regclass);
+ALTER TABLE ONLY public.gift_tag ALTER COLUMN id SET DEFAULT nextval('public.gift_tag_id_seq'::regclass);
 
 SELECT pg_catalog.setval('public.gift_certificate_id_seq', 71, true);
 
@@ -79,7 +79,7 @@ ALTER TABLE ONLY public.tag_certificate
     ADD CONSTRAINT tag_certificate_pk UNIQUE (tag_id, certificate_id);
 
 ALTER TABLE ONLY public.gift_tag
-    ADD CONSTRAINT tag_pkey PRIMARY KEY (tag_id);
+    ADD CONSTRAINT tag_pkey PRIMARY KEY (id);
 
 CREATE UNIQUE INDEX tag_name_uindex ON public.gift_tag USING btree (name);
 
@@ -87,4 +87,4 @@ ALTER TABLE ONLY public.tag_certificate
     ADD CONSTRAINT certificate_fk FOREIGN KEY (certificate_id) REFERENCES public.gift_certificate(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.tag_certificate
-    ADD CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES public.gift_tag(tag_id);
+    ADD CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES public.gift_tag(id);

@@ -7,7 +7,7 @@ public class TagConverter implements GiftCertConverter<Tag, TagDto> {
     @Override
     public Tag dtoConvert(TagDto tagDto) {
         Tag tag = new Tag();
-        tag.setTagId(tagDto.getTagId());
+        tag.setId(tagDto.getTagId());
         tag.setName(tagDto.getName());
         return tag;
     }
@@ -15,7 +15,7 @@ public class TagConverter implements GiftCertConverter<Tag, TagDto> {
     @Override
     public TagDto domainConvert(Tag tag) {
         TagDto tagDto = new TagDto();
-        tagDto.setTagId(tag.getTagId());
+        tagDto.setTagId(tag.getId());
         tagDto.setName(tag.getName());
         return tagDto;
     }

@@ -2,8 +2,7 @@ package by.rekuts.giftcertificates.service.impl;
 
 import by.rekuts.giftcertificates.repository.domain.Tag;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
-import by.rekuts.giftcertificates.repository.specs.AllTagsSpecification;
-import by.rekuts.giftcertificates.repository.specs.OneTagByNameSpecification;
+import by.rekuts.giftcertificates.repository.specs.TagSpecification;
 import by.rekuts.giftcertificates.service.TagService;
 import by.rekuts.giftcertificates.service.dto.TagDto;
 import by.rekuts.giftcertificates.service.converter.TagConverter;
@@ -43,7 +42,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagDto> getList() {
-        List<Tag> tags = repository.getList(new AllTagsSpecification());
+        List<Tag> tags = repository.getList(new TagSpecification());
         return tags.stream()
                 .map(converter::domainConvert)
                 .collect(Collectors.toList());
@@ -51,8 +50,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto getTagByName(String tagName) {
-        OneTagByNameSpecification spec = new OneTagByNameSpecification(tagName);
-        List<Tag> tags = repository.getList(spec);
+        List<Tag> tags = repository.getList(new TagSpecification(tagName));
         Optional<TagDto> optionalTagDto = tags.stream()
                 .map(converter::domainConvert)
                 .findFirst();

@@ -86,7 +86,7 @@ ALTER SEQUENCE public.gift_certificate_id_seq OWNED BY public.gift_certificate.i
 --
 
 CREATE TABLE public.gift_tag (
-    tag_id integer NOT NULL,
+    id integer NOT NULL,
     name text NOT NULL
 );
 
@@ -143,7 +143,7 @@ ALTER TABLE ONLY public.gift_certificate ALTER COLUMN id SET DEFAULT nextval('pu
 -- Name: gift_tag tag_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.gift_tag ALTER COLUMN tag_id SET DEFAULT nextval('public.gift_tag_id_seq'::regclass);
+ALTER TABLE ONLY public.gift_tag ALTER COLUMN id SET DEFAULT nextval('public.gift_tag_id_seq'::regclass);
 
 
 --
@@ -164,7 +164,7 @@ COPY public.gift_certificate (id, name, description, price, creation_date, modif
 -- Data for Name: gift_tag; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.gift_tag (tag_id, name) FROM stdin;
+COPY public.gift_tag (id, name) FROM stdin;
 0	funny
 1	wedding
 4	tour
@@ -226,7 +226,7 @@ ALTER TABLE ONLY public.tag_certificate
 --
 
 ALTER TABLE ONLY public.gift_tag
-    ADD CONSTRAINT tag_pkey PRIMARY KEY (tag_id);
+    ADD CONSTRAINT tag_pkey PRIMARY KEY (id);
 
 
 --
@@ -252,7 +252,7 @@ ALTER TABLE ONLY public.tag_certificate
 --
 
 ALTER TABLE ONLY public.tag_certificate
-    ADD CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES public.gift_tag(tag_id);
+    ADD CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES public.gift_tag(id);
 
 
 -- Completed on 2018-12-20 11:08:31 UTC

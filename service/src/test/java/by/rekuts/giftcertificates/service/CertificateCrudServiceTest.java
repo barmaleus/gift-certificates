@@ -2,10 +2,10 @@ package by.rekuts.giftcertificates.service;
 
 import by.rekuts.giftcertificates.repository.domain.Certificate;
 import by.rekuts.giftcertificates.repository.repos.CertificateRepository;
+import by.rekuts.giftcertificates.repository.repos.TagRepository;
 import by.rekuts.giftcertificates.repository.repos.impl.CertificateRepositoryImpl;
-import by.rekuts.giftcertificates.repository.specs.AllCertsSpecification;
-import by.rekuts.giftcertificates.repository.specs.OneCertificateByIdSpecification;
-import by.rekuts.giftcertificates.repository.specs.SearchCertsSpecification;
+import by.rekuts.giftcertificates.repository.repos.impl.TagRepositoryImpl;
+import by.rekuts.giftcertificates.repository.specs.CertificateSpecification;
 import by.rekuts.giftcertificates.service.converter.CertificateConverter;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
 import by.rekuts.giftcertificates.service.impl.CertificateServiceImpl;
@@ -25,8 +25,9 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class CertificateCrudServiceTest {
     private CertificateRepository repository = mock(CertificateRepositoryImpl.class);
+    private TagRepository tagRepository = mock(TagRepositoryImpl.class);
     private CertificateConverter converter = new CertificateConverter();
-    private CertificateService service = new CertificateServiceImpl(repository, converter);
+    private CertificateService service = new CertificateServiceImpl(repository, tagRepository, converter);
     private List<CertificateDto> certDtos;
 
     @Before
@@ -81,7 +82,7 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getAllCertsTestTrue() {
-        when(repository.getList(any(AllCertsSpecification.class)))
+        when(repository.getList(any(CertificateSpecification.class)))
                 .thenReturn(
                         certDtos
                                 .stream()
@@ -99,7 +100,7 @@ public class CertificateCrudServiceTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("search", "Certificate 1");
         }};
-        when(repository.getList(any(SearchCertsSpecification.class)))
+        when(repository.getList(any(CertificateSpecification.class)))
                 .thenReturn(
                     Collections.singletonList(certDtos.get(0))
                             .stream()
@@ -116,7 +117,7 @@ public class CertificateCrudServiceTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("search", "Certificate");
         }};
-        when(repository.getList(any(SearchCertsSpecification.class)))
+        when(repository.getList(any(CertificateSpecification.class)))
                 .thenReturn(
                         certDtos
                                 .stream()
@@ -134,7 +135,7 @@ public class CertificateCrudServiceTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("search", "Certificate №1");
         }};
-        when(repository.getList(any(SearchCertsSpecification.class)))
+        when(repository.getList(any(CertificateSpecification.class)))
                 .thenReturn(Collections.emptyList());
         List<CertificateDto> certs = service.getList(params);
         Assert.assertEquals(0, certs.size());
@@ -142,7 +143,7 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getCertByIdTestTrue() {
-        when(repository.getList(any(OneCertificateByIdSpecification.class)))
+        when(repository.getList(any(CertificateSpecification.class)))
                 .thenReturn(Collections.singletonList(converter.dtoConvert(certDtos.get(1))));
         CertificateDto cert = service.getCertById(8);
         Assert.assertEquals(8, cert.getCertificateId());
@@ -150,8 +151,8 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getCertByIdTestFalse() {
-        when(repository.getList(any(OneCertificateByIdSpecification.class))).thenReturn(null);
+        when(repository.getList(any(CertificateSpecification.class))).thenReturn(null);
         CertificateDto cert = service.getCertById(9);
-        Assert.assertEquals(null, cert);
+        Assert.assertNull(cert);
     }
 }

@@ -1,15 +1,25 @@
 package by.rekuts.giftcertificates.repository.domain;
 
-public class Tag {
-    int tagId;
-    String name;
+import javax.persistence.*;
+import java.util.List;
 
-    public int getTagId() {
-        return tagId;
+@Entity
+@Table(name = "gift_tag")
+public class Tag {
+    @Id
+    @SequenceGenerator(name = "certSequence", sequenceName = "gift_tag_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certSequence")
+    private int id;
+    private String name;
+    @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
+    private List<Certificate> certificates;
+
+    public int getId() {
+        return id;
     }
 
-    public void setTagId(int tagId) {
-        this.tagId = tagId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -20,10 +30,18 @@ public class Tag {
         this.name = name;
     }
 
+    public List<Certificate> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<Certificate> certificates) {
+        this.certificates = certificates;
+    }
+
     @Override
     public String toString() {
         return "Tag{" +
-                "tagId=" + tagId +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
     }

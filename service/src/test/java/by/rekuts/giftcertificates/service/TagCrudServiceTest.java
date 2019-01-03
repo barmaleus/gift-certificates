@@ -3,8 +3,7 @@ package by.rekuts.giftcertificates.service;
 import by.rekuts.giftcertificates.repository.domain.Tag;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
 import by.rekuts.giftcertificates.repository.repos.impl.TagRepositoryImpl;
-import by.rekuts.giftcertificates.repository.specs.AllTagsSpecification;
-import by.rekuts.giftcertificates.repository.specs.OneTagByNameSpecification;
+import by.rekuts.giftcertificates.repository.specs.TagSpecification;
 import by.rekuts.giftcertificates.service.converter.TagConverter;
 import by.rekuts.giftcertificates.service.dto.TagDto;
 import by.rekuts.giftcertificates.service.impl.TagServiceImpl;
@@ -63,7 +62,7 @@ public class TagCrudServiceTest {
 
     @Test
     public void getAllTagsTestTrue() {
-        when(repository.getList(any(AllTagsSpecification.class)))
+        when(repository.getList(any(TagSpecification.class)))
                 .thenReturn(
                         tagDtos
                                 .stream()
@@ -77,7 +76,7 @@ public class TagCrudServiceTest {
 
     @Test
     public void getTagsByNameTestTrue() {
-        when(repository.getList(any(OneTagByNameSpecification.class)))
+        when(repository.getList(any(TagSpecification.class)))
                 .thenReturn(Collections.singletonList(converter.dtoConvert(tagDtos.get(0))));
         TagDto tagDto = service.getTagByName("funny");
         Assert.assertEquals("funny", tagDto.getName());

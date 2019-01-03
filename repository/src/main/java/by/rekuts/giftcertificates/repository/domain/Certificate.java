@@ -1,23 +1,42 @@
 package by.rekuts.giftcertificates.repository.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Entity
+@Table(name = "gift_certificate")
 public class Certificate {
-    int certificateId;
-    String name;
-    String description;
-    BigDecimal price;
-    LocalDateTime creationDate;
-    LocalDateTime modificationDate;
-    int expirationDays;
+    @Id
+    @SequenceGenerator(name = "certSequence", sequenceName = "gift_certificate_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certSequence")
+    private Integer id;
+    @Column(nullable = false)
+    private String name;
+    private String description;
+    @Column(nullable = false)
+    private BigDecimal price;
+    @Column(name = "creation_date")
+    private LocalDateTime creationDate;
+    @Column(name = "modification_date")
+    private LocalDateTime modificationDate;
+    @Column(name = "expiration_days")
+    private Integer expirationDays;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "tag_certificate",
+            joinColumns = {@JoinColumn(name = "certificate_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id")}
+    )
+    private List<Tag> tags;
 
-    public int getCertificateId() {
-        return certificateId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCertificateId(int certificateId) {
-        this.certificateId = certificateId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -60,18 +79,26 @@ public class Certificate {
         this.modificationDate = modificationDate;
     }
 
-    public int getExpirationDays() {
+    public Integer getExpirationDays() {
         return expirationDays;
     }
 
-    public void setExpirationDays(int expirationDays) {
+    public void setExpirationDays(Integer expirationDays) {
         this.expirationDays = expirationDays;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override
     public String toString() {
         return "Certificate{" +
-                "certificateId=" + certificateId +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +

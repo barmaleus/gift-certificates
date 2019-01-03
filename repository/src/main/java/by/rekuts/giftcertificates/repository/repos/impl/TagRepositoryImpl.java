@@ -1,98 +1,59 @@
 package by.rekuts.giftcertificates.repository.repos.impl;
 
-import by.rekuts.giftcertificates.repository.DatabaseLabelNames;
-import by.rekuts.giftcertificates.repository.QueryToDatabase;
 import by.rekuts.giftcertificates.repository.domain.Tag;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
-import by.rekuts.giftcertificates.repository.specs.SqlSpecification;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import by.rekuts.giftcertificates.repository.specs.Specification;
+import by.rekuts.giftcertificates.repository.specs.TagSpecification;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
 public class TagRepositoryImpl implements TagRepository {
-    private static final Logger LOGGER = LogManager.getLogger(TagRepositoryImpl.class.getName());
     private static final String BASE_TAG_PATH = "/tag";
 
-    final
-    DataSource dataSource;
-
-    private Connection connection = null;
-    private PreparedStatement preparedStatement;
-    private ResultSet resultSet;
-
-    @Autowired
-    public TagRepositoryImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Override
     public String create(Tag tag) {
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(QueryToDatabase.CREATE_TAG.getQuery());
-            preparedStatement.setString(1, tag.getName());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.log(Level.WARN, "Can't insert new tag to database. ", e);
-        }
+        entityManager.persist(tag);
+        entityManager.flush();
         return BASE_TAG_PATH + "/" + tag.getName();
     }
 
     @Override
     public void update(Tag tag) {
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(QueryToDatabase.UPDATE_TAG.getQuery());
-            preparedStatement.setString(1, tag.getName());
-            preparedStatement.setInt(2, tag.getTagId());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.log(Level.WARN, "Can't update tag in database. Id: " + tag.getTagId(), e);
-        }
+        //do nothing
+        //delete the old tag and create a new one
     }
 
     @Override
     public void delete(int id) {
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(QueryToDatabase.DELETE_TAG.getQuery());
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.log(Level.WARN, "Can't delete tag from database. Tag id: " + id, e);
-        }
+       entityManager.remove(entityManager.find(Tag.class, id));
     }
 
     @Override
-    public List<Tag> getList(SqlSpecification sqlSpecification) {
+    public List<Tag> getList(Specification specification) {
 
-        List<Tag> resultList = new ArrayList<>();
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(sqlSpecification.getSqlQuery());
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Tag tag = new Tag();
-                int tagId = resultSet.getInt(DatabaseLabelNames.COLUMN_LABEL_TAG_ID.getName());
-                String tagName = resultSet.getString(DatabaseLabelNames.COLUMN_LABEL_TAG_NAME.getName());
-                tag.setTagId(tagId);
-                tag.setName(tagName);
-                resultList.add(tag);
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.WARN, "Can't select tags from database. " + e);
+        final TagSpecification tagSpecification = (TagSpecification) specification;
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tag> criteriaQuery = builder.createQuery(Tag.class);
+        Root<Tag> certificateRoot = criteriaQuery.from(Tag.class);
+        List<Predicate> predicates;
+        predicates = tagSpecification.getPredicates(certificateRoot, builder);
+
+        if (!predicates.isEmpty()) {
+            criteriaQuery.where(
+                    predicates.toArray(new Predicate[]{})
+            );
         }
-        return resultList;
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }

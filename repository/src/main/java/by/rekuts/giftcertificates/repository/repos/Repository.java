@@ -1,6 +1,6 @@
 package by.rekuts.giftcertificates.repository.repos;
 
-import by.rekuts.giftcertificates.repository.specs.SqlSpecification;
+import by.rekuts.giftcertificates.repository.specs.Specification;
 
 import java.util.List;
 
@@ -29,5 +29,5 @@ public interface Repository<T> {
     /**
      * @return list of all t-objects from database by any criteria, mentioned in specification
      */
-    List<T> getList(SqlSpecification sqlSpecification);
+    List<T> getList(Specification specification);
 }

@@ -7,7 +7,7 @@ public class CertificateConverter implements GiftCertConverter<Certificate, Cert
     @Override
     public Certificate dtoConvert(CertificateDto certDto) {
         Certificate cert = new Certificate();
-        cert.setCertificateId(certDto.getCertificateId());
+        cert.setId(certDto.getCertificateId());
         cert.setName(certDto.getName());
         cert.setDescription(certDto.getDescription());
         cert.setPrice(certDto.getPrice());
@@ -20,7 +20,7 @@ public class CertificateConverter implements GiftCertConverter<Certificate, Cert
     @Override
     public CertificateDto domainConvert(Certificate cert) {
         CertificateDto certDto = new CertificateDto();
-        certDto.setCertificateId(cert.getCertificateId());
+        certDto.setCertificateId(cert.getId());
         certDto.setName(cert.getName());
         certDto.setDescription(cert.getDescription());
         certDto.setPrice(cert.getPrice());
