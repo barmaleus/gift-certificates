@@ -13,7 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -25,7 +24,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     @Override
     public String create(Certificate certificate) {
-        certificate.setCreationDate(LocalDateTime.now());
         if(certificate.getExpirationDays() == null) {
             certificate.setExpirationDays(1);
         }
@@ -43,7 +41,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         dbCertificate.setName(certificate.getName());
         dbCertificate.setDescription(certificate.getDescription());
         dbCertificate.setPrice(certificate.getPrice());
-        dbCertificate.setModificationDate(LocalDateTime.now());
         dbCertificate.setExpirationDays(certificate.getExpirationDays());
         entityManager.merge(dbCertificate);
     }

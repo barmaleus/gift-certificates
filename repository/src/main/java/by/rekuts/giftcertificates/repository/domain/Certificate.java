@@ -2,6 +2,7 @@ package by.rekuts.giftcertificates.repository.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,6 +31,16 @@ public class Certificate {
             inverseJoinColumns = {@JoinColumn(name = "tag_id")}
     )
     private List<Tag> tags;
+
+    @PrePersist
+    public void onPrePersist() {
+        setCreationDate(LocalDateTime.now());
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        setModificationDate(LocalDateTime.now());
+    }
 
     public Integer getId() {
         return id;
