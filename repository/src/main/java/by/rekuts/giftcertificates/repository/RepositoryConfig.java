@@ -51,6 +51,7 @@ public class RepositoryConfig {
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
         properties.put("hibernate.show_sql", "true");
         properties.put("hibernate.format_sql", "true");
+        properties.put("hibernate.jdbc.lob.non_contextual_creation", "true");
         return properties;
     }
 }

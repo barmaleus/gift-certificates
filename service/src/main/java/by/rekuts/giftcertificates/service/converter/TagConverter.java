@@ -3,7 +3,7 @@ package by.rekuts.giftcertificates.service.converter;
 import by.rekuts.giftcertificates.repository.domain.Tag;
 import by.rekuts.giftcertificates.service.dto.TagDto;
 
-public class TagConverter implements GiftCertConverter<Tag, TagDto> {
+public class TagConverter implements CommonConverter<Tag, TagDto> {
     @Override
     public Tag dtoConvert(TagDto tagDto) {
         Tag tag = new Tag();

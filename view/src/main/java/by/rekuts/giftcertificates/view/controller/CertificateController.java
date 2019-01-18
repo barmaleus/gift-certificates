@@ -25,7 +25,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class CertificateController {
-    private static final Logger LOGGER = LogManager.getLogger(CertificateController.class.getName());
     private final CertificateService service;
 
     @Autowired
@@ -34,7 +33,7 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/certificate/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getCertificateById(@PathVariable("certId") String certId) {
+    public ResponseEntity getCertificateById(@PathVariable("certId") String certId) throws ServiceException {
         int id = Integer.parseInt(certId);
         CertificateDto certificateDto = service.getCertById(id);
         Link selfLink = linkTo(CertificateController.class).slash("certificate/" + id).withSelfRel();
@@ -47,9 +46,9 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/certificate", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Resources<CertificateDto> getCertificates(
+    public Resources<CertificateDto> getCertificates (
             @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "search", required = false) String search) {
+            @RequestParam(value = "search", required = false) String search) throws ServiceException{
 
         Map<String, String> params = new HashMap<>();
         if(tag != null) { params.put("tag", tag); }
@@ -65,7 +64,7 @@ public class CertificateController {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////// example of request in body //////////////////////////////
+    ////////////////////////// example of request in the body //////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
     /**
      * Example of json object of certificate in request
@@ -77,31 +76,23 @@ public class CertificateController {
      *     }
      */
     @PostMapping(value = "/certificate", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CertificateDto> createCertificate(@RequestBody CertificateDto newCertificate) {
-        try {
-            String relativePathToCreatedElement = service.create(newCertificate);
-            int slashIndex = relativePathToCreatedElement.lastIndexOf("/");
-            String substr = relativePathToCreatedElement.substring(slashIndex+1);
-            int certId = Integer.parseInt(substr);
-            CertificateDto resultCertificate = service.getCertById(certId);
+    public ResponseEntity<CertificateDto> createCertificate(
+            @RequestBody CertificateDto newCertificate) throws ServiceException {
+        String relativePathToCreatedElement = service.create(newCertificate);
+        int certId = new ControllerHelper().getIdFromUrl(relativePathToCreatedElement);
+        CertificateDto resultCertificate = service.getCertById(certId);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Location", relativePathToCreatedElement);
-            return new ResponseEntity<>(resultCertificate, headers, HttpStatus.CREATED);
-        } catch (ServiceException e) {
-            LOGGER.log(Level.WARN, e);
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", relativePathToCreatedElement);
+        return new ResponseEntity<>(resultCertificate, headers, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/certificate/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CertificateDto> updateCertificate(@PathVariable("certId") String certId, @RequestBody CertificateDto upCertificate) {
-        try {
-            service.update(upCertificate);
-            return new ResponseEntity<>(upCertificate, HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+    public ResponseEntity<CertificateDto> updateCertificate(
+            @PathVariable("certId") String certId,
+            @RequestBody CertificateDto upCertificate) throws ServiceException {
+        service.update(upCertificate);
+        return new ResponseEntity<>(upCertificate, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/certificate/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,7 +102,7 @@ public class CertificateController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    private Link linkToSingleCertificate(CertificateDto certificate) {
+    private Link linkToSingleCertificate(CertificateDto certificate) throws ServiceException {
         return linkTo(methodOn(CertificateController.class)
                 .getCertificateById(String.valueOf(certificate.getCertificateId())))
                 .withRel("cert-" + certificate.getCertificateId());

@@ -3,7 +3,7 @@ package by.rekuts.giftcertificates.service.converter;
 import by.rekuts.giftcertificates.repository.domain.Certificate;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
 
-public class CertificateConverter implements GiftCertConverter<Certificate, CertificateDto> {
+public class CertificateConverter implements CommonConverter<Certificate, CertificateDto> {
     @Override
     public Certificate dtoConvert(CertificateDto certDto) {
         Certificate cert = new Certificate();

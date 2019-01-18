@@ -151,7 +151,7 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getCertByIdTestFalse() {
-        when(repository.getList(any(CertificateSpecification.class))).thenReturn(null);
+        when(repository.getList(any(CertificateSpecification.class))).thenReturn(new ArrayList<>());
         CertificateDto cert = service.getCertById(9);
         Assert.assertNull(cert);
     }

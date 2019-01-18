@@ -2,11 +2,17 @@ package by.rekuts.giftcertificates.service;
 
 import by.rekuts.giftcertificates.service.converter.CertificateConverter;
 import by.rekuts.giftcertificates.service.converter.TagConverter;
-import org.springframework.context.annotation.*;
+import by.rekuts.giftcertificates.service.converter.UserConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.security.NoSuchAlgorithmException;
 
 @Configuration
-@Profile("release")
-@ComponentScan (basePackages = "by.rekuts.giftcertificates.service")
+@ComponentScan(basePackages = "by.rekuts.giftcertificates.service")
 public class ServiceConfig {
     @Bean
     CertificateConverter getCertConverter() {
@@ -16,5 +22,15 @@ public class ServiceConfig {
     @Bean
     TagConverter getTagConverter() {
         return new TagConverter();
+    }
+
+    @Bean
+    UserConverter getUserConverter() {
+        return new UserConverter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
+        return new BCryptPasswordEncoder();
     }
 }

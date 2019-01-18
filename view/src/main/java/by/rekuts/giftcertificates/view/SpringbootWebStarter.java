@@ -1,4 +1,4 @@
-package by.rekuts.giftcertificates.view.start;
+package by.rekuts.giftcertificates.view;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

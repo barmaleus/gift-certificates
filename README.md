@@ -1,6 +1,7 @@
 **Server application for Gift Certificates system with Certificate and Tag entities.**
 
 **1 step**
+
 System exposes REST API:
 - CRD operations for Tag
 - CRUD operations for Certificate, search by part of name/description and by tag
@@ -23,4 +24,20 @@ There are no:
 - Lombok
 
 **2 step**
+
 Maven changed to Gradle
+
+Spring Boot was added
+
+JPA and auditing was added (without Spring Data)
+
+Spring Security with OAuth2 and JWT was added
+
+Database has been filled
+
+Database stores hashes
+
+HTTPS protocol added.
+
+Logger fixed.
+

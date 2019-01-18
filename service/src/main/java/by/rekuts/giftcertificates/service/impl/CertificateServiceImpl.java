@@ -10,6 +10,7 @@ import by.rekuts.giftcertificates.service.converter.CertificateConverter;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class CertificateServiceImpl implements CertificateService {
         this.converter = converter;
     }
 
+    @Transactional
     @Override
     public String create(CertificateDto certDto) throws ServiceException {
         if (certDto.getName() != null && certDto.getPrice() != null) {
@@ -37,6 +39,7 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
+    @Transactional
     @Override
     public void update(CertificateDto certDto) throws ServiceException {
         if(certDto.getName() != null && certDto.getPrice() != null && certDto.getCertificateId() != 0) {
@@ -46,6 +49,7 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
+    @Transactional
     @Override
     public void delete(int id) {
         repository.delete(id);
@@ -71,7 +75,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public CertificateDto getCertById(int id) {
         List<Certificate> certificates = repository.getList(new CertificateSpecification(id));
-        if (certificates != null && certificates.size() != 0) {
+        if (certificates.size() != 0) {
             Certificate certificate = certificates.get(0);
             return converter.domainConvert(certificate);
         } else {

@@ -1,6 +1,6 @@
 package by.rekuts.giftcertificates.service.converter;
 
-public interface GiftCertConverter<Domain, Dto> {
+public interface CommonConverter<Domain, Dto> {
     Domain dtoConvert(Dto dto);
 
     Dto domainConvert(Domain domain);

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -34,15 +33,13 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     @Override
     public void update(Certificate certificate) {
-        if(certificate.getName() == null || certificate.getPrice() == null) {
-            throw new PersistenceException("Certificate update error. Name or price is expected");
-        }
         Certificate dbCertificate = entityManager.find(Certificate.class, certificate.getId());
         dbCertificate.setName(certificate.getName());
         dbCertificate.setDescription(certificate.getDescription());
         dbCertificate.setPrice(certificate.getPrice());
         dbCertificate.setExpirationDays(certificate.getExpirationDays());
         entityManager.merge(dbCertificate);
+        entityManager.flush();
     }
 
     @Override
