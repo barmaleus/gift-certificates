@@ -10,8 +10,15 @@ public class Tag {
     @SequenceGenerator(name = "certSequence", sequenceName = "gift_tag_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certSequence")
     private int id;
+
     private String name;
-    @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "tag_certificate",
+            joinColumns = {@JoinColumn(name = "tag_id")},
+            inverseJoinColumns = {@JoinColumn(name = "certificate_id")}
+    )
     private List<Certificate> certificates;
 
     public int getId() {

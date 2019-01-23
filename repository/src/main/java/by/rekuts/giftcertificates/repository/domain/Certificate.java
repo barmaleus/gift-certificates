@@ -12,23 +12,25 @@ public class Certificate {
     @SequenceGenerator(name = "certSequence", sequenceName = "gift_certificate_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certSequence")
     private Integer id;
+
     @Column(nullable = false)
     private String name;
+
     private String description;
+
     @Column(nullable = false)
     private BigDecimal price;
+
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+
     @Column(name = "modification_date")
     private LocalDateTime modificationDate;
+
     @Column(name = "expiration_days")
     private Integer expirationDays;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "tag_certificate",
-            joinColumns = {@JoinColumn(name = "certificate_id")},
-            inverseJoinColumns = {@JoinColumn(name = "tag_id")}
-    )
+
+    @ManyToMany(mappedBy = "certificates", cascade = CascadeType.ALL)
     private List<Tag> tags;
 
     @PrePersist

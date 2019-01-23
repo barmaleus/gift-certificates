@@ -3,7 +3,6 @@ package by.rekuts.giftcertificates.service.dto;
 import org.springframework.hateoas.ResourceSupport;
 
 public class UserDto extends ResourceSupport {
-    //todo пока отставил
     private int userId;
     private String login;
     private String password;

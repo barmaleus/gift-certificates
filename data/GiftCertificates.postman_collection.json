@@ -1,0 +1,872 @@
+{
+	"info": {
+		"_postman_id": "91b2e3f5-a787-4d63-9aed-d61e7c6fa4e3",
+		"name": "GiftCertificates",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tag",
+			"item": [
+				{
+					"name": "Get tag",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bdc74747-6ba2-4fc3-8ebd-70946beb724f",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"funny\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/tag/funny",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"tag",
+								"funny"
+							]
+						},
+						"description": "You may write your own tag name instead of 'funny' in the URL"
+					},
+					"response": []
+				},
+				{
+					"name": "Get tags",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cbcfe809-33f0-4b98-83d0-84fb769e1fb8",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData._embedded.tagDtoList.length).to.be.above(1000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/tag",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"tag"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create tag",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7a7dda7d-1f0a-4792-a418-97a90ad66cfa",
+								"exec": [
+									"postman.setEnvironmentVariable(\"tagName\", _.random(2000, 10000000));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "21dc4894-f72e-4b02-94e1-22bebdc2a6c1",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"pm.test(\"Location is present\", function () {",
+									"    pm.response.to.have.header(\"Location\", \"/tag/\" + pm.environment.get(\"tagName\"));",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"postman.setEnvironmentVariable(\"tagId\", jsonData.tagId);",
+									"if (pm.environment.get(\"tagName\") !== jsonData.name) {",
+									"    postman.setEnvironmentVariable(\"tagName\", jsonData.name);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://localhost:1111/tag/{{tagName}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"tag",
+								"{{tagName}}"
+							]
+						},
+						"description": "First of all access token must be received. \nThen:\n\nRun https://localhost:1111/tag/{{tagName}} if you want to create tag with random name or insert you own tag name instead of {{tagName}}. \nAfter that environment variables 'tagName' and 'tagId' will be created."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete tag by name",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0e6575a7-fa1d-4cc6-b008-77e2dbf0c2cd",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "6053b61a-5e0b-49e6-9d34-36df3d3b9781",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://localhost:1111/tag/{{tagName}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"tag",
+								"{{tagName}}"
+							]
+						},
+						"description": "Run create tag for receiving env variable 'tagName' or write tagName yourself in which you assured."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete tag by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "605f873c-01ee-4898-a2d1-243baba6d636",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://localhost:1111/tag/id/{{tagId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"tag",
+								"id",
+								"{{tagId}}"
+							]
+						},
+						"description": "Run create tag for receiving env variable 'tagId' or write tagId yourself in which you assured."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Certificate",
+			"item": [
+				{
+					"name": "Get certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dca314bd-663c-48ba-be52-b17157910280",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"American Hustle\");",
+									"    pm.expect(jsonData.price).to.eql(596.95);",
+									"    pm.expect(jsonData.expirationDays).to.eql(46);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/certificate/500",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"certificate",
+								"500"
+							]
+						},
+						"description": "You may write your own certificate id instead of '500' in the URL"
+					},
+					"response": []
+				},
+				{
+					"name": "Get certificates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "faf0892e-12f7-46d1-bdea-a867621108f1",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData._embedded.certificateDtoList.length).to.be.above(10000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/certificate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"certificate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "730e51ab-756c-484c-987b-5f29304df116",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Location is present\", function () {",
+									"    pm.response.to.have.header(\"Location\", \"/certificate/\" + jsonData.name);",
+									"});",
+									"",
+									"// postman.setEnvironmentVariable(\"certId\", jsonData.certId);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Unique certificate name12314\",\r\n\t\"description\": \"Description that could be null\",\r\n\t\"price\": 500,\r\n\t\"expirationDays\": 13\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:1111/certificate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"certificate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9ae59a91-646e-476c-8360-01926cd7128e",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"Shadowboxer\");",
+									"    pm.expect(jsonData.price).to.eql(1168.40);",
+									"    pm.expect(jsonData.expirationDays).to.eql(26);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Shadowboxer\",\r\n\t\"description\": \"Praesent lectus. Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor.\",\r\n\t\"price\": 1168.40,\r\n\t\"expirationDays\": 26\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:1111/certificate/10070",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"certificate",
+								"10070"
+							]
+						},
+						"description": "You may write your own certificate id instead of '10070' in the URL"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "81a13ed9-a4a2-4048-b393-aa32ed2243af",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://localhost:1111/certificate/{{certId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"certificate",
+								"{{certId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9deb3987-7997-47ba-af46-79bc092fbe42",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.login).to.eql(\"user1\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/user/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f5b9083e-7204-4d5a-b994-1b9b3b1189ba",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData._embedded.userDtoList.length).to.be.above(1000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/user",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "380c4690-4d83-4a57-970d-9e1f37da1e87",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Location is present\", function () {",
+									"    pm.response.to.have.header(\"Location\", \"/user/\" + jsonData.name);",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"userId\", jsonData.userId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"login\": \"user100500\",\r\n\t\"password\": \"user100500\"\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:1111/user",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9ae7f2c6-a55e-4c53-b0fb-f325782aae5b",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.login).to.eql(\"user100500\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"login\": \"user100500\",\r\n\t\"password\": \"user100500\"\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:1111/user",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b68cf186-5922-4684-b57f-380204c36468",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://localhost:1111/user/{{userId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"user",
+								"{{userId}}"
+							]
+						},
+						"description": "Run create user for receiving env variable 'userId' or write tagId yourself in which you assured."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Access token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13515d26-7966-44f9-adc7-606b3fbc8b10",
+						"exec": [
+							"if (responseCode.code != 200) {\r",
+							"    postman.setNextRequest(null);\r",
+							"}\r",
+							"\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"response = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"accessToken\", response.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "gift-secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "gift-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "user1",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "user1",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://localhost:1111/oauth/token",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "1111",
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

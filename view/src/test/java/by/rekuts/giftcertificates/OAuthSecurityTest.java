@@ -1,15 +1,12 @@
 package by.rekuts.giftcertificates;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
-
 import by.rekuts.giftcertificates.view.SpringbootWebStarter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,9 +16,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-
-import org.springframework.boot.json.JacksonJsonParser;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
@@ -81,6 +81,14 @@ public class OAuthSecurityTest {
         String accessToken = obtainAccessToken("user1", "user1");
         mockMvc.perform(get("/tag").secure(true)
                 .header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isOk()); //200
+                .andExpect(status().isOk())
+                .andExpect(result -> result
+                        .getResponse().getHeader("Content-Type").startsWith("application/json"))
+                .andExpect(result -> result
+                        .getResponse().getContentAsString().startsWith("{\"_embedded\":{\"tagDtoList\":[{\"tagId\"")); //200
     }
+
+    //todo more tests
+
+    //todo test spring transactions
 }

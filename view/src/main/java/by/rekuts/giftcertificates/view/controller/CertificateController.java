@@ -91,6 +91,8 @@ public class CertificateController {
     public ResponseEntity<CertificateDto> updateCertificate(
             @PathVariable("certId") String certId,
             @RequestBody CertificateDto upCertificate) throws ServiceException {
+        int id = Integer.parseInt(certId);
+        upCertificate.setCertificateId(id);
         service.update(upCertificate);
         return new ResponseEntity<>(upCertificate, HttpStatus.OK);
     }

@@ -59,21 +59,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //login could not be changed
     @Transactional
     @Override
     public void update(UserDto userDto) throws ServiceException {
-        if(userDto.getLogin() != null && userDto.getPassword() != null && userDto.getUserId() != 0) {
-            UserDto tempUser = getUserById(userDto.getUserId());
-            // check, if password has changed
-            if(userDto.getPassword().equals(tempUser.getPassword())) {
-                repository.update(converter.dtoConvert(userDto));
-            } else {
-                userDto.setPassword(encoder.encode(userDto.getPassword()));
-                userDto.setPassword(userDto.getPassword());
-                repository.update(converter.dtoConvert(userDto));
-            }
+        if(userDto.getLogin() != null && userDto.getPassword() != null) {
+            UserDto tempUser = getUserByLogin(userDto.getLogin());
+            userDto.setUserId(tempUser.getUserId());
+            userDto.setPassword(encoder.encode(userDto.getPassword()));
+            repository.update(converter.dtoConvert(userDto));
         } else {
-            throw new ServiceException("Can't update user. Login, password or id is expected.");
+            throw new ServiceException("Can't update user. Login, password is expected.");
         }
     }
 

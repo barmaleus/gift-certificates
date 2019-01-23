@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.csrf.CsrfFilter;
 
 @Configuration
 @EnableResourceServer
@@ -25,8 +24,6 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().addFilterBefore(
-                new StatelessCsrfFilter(), CsrfFilter.class);
 
         http
                 .requiresChannel()
