@@ -3,8 +3,8 @@ package by.rekuts.giftcertificates.service.dto;
 import org.springframework.hateoas.ResourceSupport;
 
 public class TagDto extends ResourceSupport {
-    int tagId;
-    String name;
+    private int tagId;
+    private String name;
 
     public int getTagId() {
         return tagId;

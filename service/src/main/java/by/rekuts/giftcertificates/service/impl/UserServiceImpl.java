@@ -59,12 +59,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    //login could not be changed
     @Transactional
     @Override
     public void update(UserDto userDto) throws ServiceException {
         if(userDto.getLogin() != null && userDto.getPassword() != null) {
-            UserDto tempUser = getUserByLogin(userDto.getLogin());
+            UserDto tempUser = getUserById(userDto.getUserId());
             userDto.setUserId(tempUser.getUserId());
             userDto.setPassword(encoder.encode(userDto.getPassword()));
             repository.update(converter.dtoConvert(userDto));

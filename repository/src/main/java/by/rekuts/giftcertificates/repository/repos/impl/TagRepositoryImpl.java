@@ -16,7 +16,7 @@ import java.util.List;
 
 @Repository
 public class TagRepositoryImpl implements TagRepository {
-    private static final String BASE_TAG_PATH = "/tag";
+    private static final String BASE_TAG_PATH = "/tags";
 
     @PersistenceContext
     EntityManager entityManager;
@@ -49,11 +49,6 @@ public class TagRepositoryImpl implements TagRepository {
         List<Predicate> predicates;
         predicates = tagSpecification.getPredicates(certificateRoot, builder);
 
-        if (!predicates.isEmpty()) {
-            criteriaQuery.where(
-                    predicates.toArray(new Predicate[]{})
-            );
-        }
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        return new EntitiesExtractor<Tag>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery);
     }
 }

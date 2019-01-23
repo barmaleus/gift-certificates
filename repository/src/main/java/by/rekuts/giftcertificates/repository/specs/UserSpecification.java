@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserSpecification extends Specification {
-    Integer id;
-    String login;
+    private Integer id;
+    private String login;
 
     public UserSpecification() {}
     public UserSpecification(Integer id) {

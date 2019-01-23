@@ -17,7 +17,7 @@ import java.util.List;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
-    private static final String BASE_USER_PATH = "/user";
+    private static final String BASE_USER_PATH = "/users";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -59,11 +59,6 @@ public class UserRepositoryImpl implements UserRepository {
         List<Predicate> predicates;
         predicates = userSpecification.getPredicates(root, builder);
 
-        if (!predicates.isEmpty()) {
-            criteriaQuery.where(
-                    predicates.toArray(new Predicate[]{})
-            );
-        }
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        return new EntitiesExtractor<User>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery);
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 @Repository
 public class CertificateRepositoryImpl implements CertificateRepository {
-    private static final String BASE_CERTIFICATE_PATH = "/certificate";
+    private static final String BASE_CERTIFICATE_PATH = "/certificates";
 
     @PersistenceContext
     EntityManager entityManager;
@@ -57,11 +57,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
         List<Predicate> predicates;
         predicates = certificateSpecification.getPredicates(certificateRoot, builder);
 
-        if (!predicates.isEmpty()) {
-            criteriaQuery.where(
-                    predicates.toArray(new Predicate[]{})
-            );
-        }
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        return new EntitiesExtractor<Certificate>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery);
     }
 }

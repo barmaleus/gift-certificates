@@ -6,13 +6,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class CertificateDto extends ResourceSupport {
-    int certificateId;
-    String name;
-    String description;
-    BigDecimal price;
-    LocalDateTime creationDate;
-    LocalDateTime modificationDate;
-    int expirationDays;
+    private int certificateId;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private LocalDateTime creationDate;
+    private LocalDateTime modificationDate;
+    private int expirationDays;
 
     public int getCertificateId() {
         return certificateId;

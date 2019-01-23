@@ -35,7 +35,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .logout().disable()
                 .anonymous().disable()
                 .authorizeRequests()
-                .antMatchers("/user", "/user/**").hasAuthority("ADMIN")
+                .antMatchers("/users", "/users/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and().exceptionHandling().accessDeniedHandler(oauthAccessDeniedHandler())
                 .and().exceptionHandling().authenticationEntryPoint(oAuth2AuthenticationEntryPoint());

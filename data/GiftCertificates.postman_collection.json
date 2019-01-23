@@ -42,14 +42,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://localhost:1111/tag/funny",
+							"raw": "https://localhost:1111/tags/funny",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"tag",
+								"tags",
 								"funny"
 							]
 						},
@@ -69,7 +69,7 @@
 									"",
 									"var jsonData = pm.response.json();",
 									"pm.test(\"Returned right json-object\", function () {",
-									"    pm.expect(jsonData._embedded.tagDtoList.length).to.be.above(1000);",
+									"    pm.expect(jsonData.content.length).to.be.above(1000);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -90,14 +90,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://localhost:1111/tag",
+							"raw": "https://localhost:1111/tags",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"tag"
+								"tags"
 							]
 						}
 					},
@@ -111,7 +111,7 @@
 							"script": {
 								"id": "7a7dda7d-1f0a-4792-a418-97a90ad66cfa",
 								"exec": [
-									"postman.setEnvironmentVariable(\"tagName\", _.random(2000, 10000000));"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -124,15 +124,12 @@
 									"tests[\"Status code is 201\"] = responseCode.code === 201;",
 									"",
 									"pm.test(\"Location is present\", function () {",
-									"    pm.response.to.have.header(\"Location\", \"/tag/\" + pm.environment.get(\"tagName\"));",
+									"    pm.response.to.have.header(\"Location\", \"/tags/\" + pm.environment.get(\"tagName\"));",
 									"});",
 									"",
 									"var jsonData = pm.response.json();",
 									"postman.setEnvironmentVariable(\"tagId\", jsonData.tagId);",
-									"if (pm.environment.get(\"tagName\") !== jsonData.name) {",
-									"    postman.setEnvironmentVariable(\"tagName\", jsonData.name);",
-									"}",
-									""
+									"postman.setEnvironmentVariable(\"tagName\", jsonData.name);"
 								],
 								"type": "text/javascript"
 							}
@@ -149,24 +146,26 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
+								"value": "application/json",
 								"type": "text"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Anytag\"\r\n}"
+						},
 						"url": {
-							"raw": "https://localhost:1111/tag/{{tagName}}",
+							"raw": "https://localhost:1111/tags",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"tag",
-								"{{tagName}}"
+								"tags"
 							]
 						},
-						"description": "First of all access token must be received. \nThen:\n\nRun https://localhost:1111/tag/{{tagName}} if you want to create tag with random name or insert you own tag name instead of {{tagName}}. \nAfter that environment variables 'tagName' and 'tagId' will be created."
+						"description": "First of all access token must be received. \nThen:\n\nInsert name of tag in the body instead of 'Anytag' and run https://localhost:1111/tags. \nAfter that environment variables 'tagName' and 'tagId' will be created."
 					},
 					"response": []
 				},
@@ -211,14 +210,14 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "https://localhost:1111/tag/{{tagName}}",
+							"raw": "https://localhost:1111/tags/{{tagName}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"tag",
+								"tags",
 								"{{tagName}}"
 							]
 						},
@@ -257,14 +256,14 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "https://localhost:1111/tag/id/{{tagId}}",
+							"raw": "https://localhost:1111/tags/id/{{tagId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"tag",
+								"tags",
 								"id",
 								"{{tagId}}"
 							]
@@ -313,14 +312,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://localhost:1111/certificate/500",
+							"raw": "https://localhost:1111/certificates/500",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"certificate",
+								"certificates",
 								"500"
 							]
 						},
@@ -340,7 +339,7 @@
 									"",
 									"var jsonData = pm.response.json();",
 									"pm.test(\"Returned right json-object\", function () {",
-									"    pm.expect(jsonData._embedded.certificateDtoList.length).to.be.above(10000);",
+									"    pm.expect(jsonData.content.length).to.be.above(10000);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -361,16 +360,68 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://localhost:1111/certificate",
+							"raw": "https://localhost:1111/certificates",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"certificate"
+								"certificates"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get certificates, search by params",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4c0f5bc2-20f4-44aa-aa9c-49c2147fb63b",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/certificates?tag=wedding&search=dress",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"certificates"
+							],
+							"query": [
+								{
+									"key": "tag",
+									"value": "wedding"
+								},
+								{
+									"key": "search",
+									"value": "dress"
+								}
+							]
+						},
+						"description": "Parameters for search:\ntag - write exactly name of tag\nsearch - write part of name or description of certificate"
 					},
 					"response": []
 				},
@@ -387,7 +438,7 @@
 									"var jsonData = pm.response.json();",
 									"",
 									"pm.test(\"Location is present\", function () {",
-									"    pm.response.to.have.header(\"Location\", \"/certificate/\" + jsonData.name);",
+									"    pm.response.to.have.header(\"Location\", \"/certificates/\" + jsonData.name);",
 									"});",
 									"",
 									"// postman.setEnvironmentVariable(\"certId\", jsonData.certId);",
@@ -472,14 +523,14 @@
 							"raw": "{\r\n\t\"name\": \"Shadowboxer\",\r\n\t\"description\": \"Praesent lectus. Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor.\",\r\n\t\"price\": 1168.40,\r\n\t\"expirationDays\": 26\r\n}"
 						},
 						"url": {
-							"raw": "https://localhost:1111/certificate/10070",
+							"raw": "https://localhost:1111/certificates/10070",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"certificate",
+								"certificates",
 								"10070"
 							]
 						},
@@ -518,14 +569,14 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "https://localhost:1111/certificate/{{certId}}",
+							"raw": "https://localhost:1111/certificates/{{certId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"certificate",
+								"certificates",
 								"{{certId}}"
 							]
 						}
@@ -570,14 +621,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://localhost:1111/user/1",
+							"raw": "https://localhost:1111/users/1",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"user",
+								"users",
 								"1"
 							]
 						}
@@ -596,7 +647,7 @@
 									"",
 									"var jsonData = pm.response.json();",
 									"pm.test(\"Returned right json-object\", function () {",
-									"    pm.expect(jsonData._embedded.userDtoList.length).to.be.above(1000);",
+									"    pm.expect(jsonData.content.length).to.be.above(1000);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -617,14 +668,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://localhost:1111/user",
+							"raw": "https://localhost:1111/users",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"user"
+								"users"
 							]
 						}
 					},
@@ -643,7 +694,7 @@
 									"var jsonData = pm.response.json();",
 									"",
 									"pm.test(\"Location is present\", function () {",
-									"    pm.response.to.have.header(\"Location\", \"/user/\" + jsonData.name);",
+									"    pm.response.to.have.header(\"Location\", \"/users/\" + jsonData.name);",
 									"});",
 									"",
 									"postman.setEnvironmentVariable(\"userId\", jsonData.userId);"
@@ -672,14 +723,14 @@
 							"raw": "{\r\n\t\"login\": \"user100500\",\r\n\t\"password\": \"user100500\"\r\n}"
 						},
 						"url": {
-							"raw": "https://localhost:1111/user",
+							"raw": "https://localhost:1111/users",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"user"
+								"users"
 							]
 						}
 					},
@@ -725,14 +776,15 @@
 							"raw": "{\r\n\t\"login\": \"user100500\",\r\n\t\"password\": \"user100500\"\r\n}"
 						},
 						"url": {
-							"raw": "https://localhost:1111/user",
+							"raw": "https://localhost:1111/users/1262",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"user"
+								"users",
+								"1262"
 							]
 						}
 					},
@@ -769,14 +821,14 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "https://localhost:1111/user/{{userId}}",
+							"raw": "https://localhost:1111/users/{{userId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"user",
+								"users",
 								"{{userId}}"
 							]
 						},
