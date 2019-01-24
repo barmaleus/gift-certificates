@@ -4,6 +4,8 @@ import by.rekuts.giftcertificates.repository.domain.Tag;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
 import by.rekuts.giftcertificates.repository.repos.impl.TagRepositoryImpl;
 import by.rekuts.giftcertificates.repository.specs.TagSpecification;
+import by.rekuts.giftcertificates.service.ServiceException;
+import by.rekuts.giftcertificates.service.TagService;
 import by.rekuts.giftcertificates.service.converter.TagConverter;
 import by.rekuts.giftcertificates.service.dto.TagDto;
 import by.rekuts.giftcertificates.service.impl.TagServiceImpl;
@@ -36,7 +38,7 @@ public class TagCrudServiceTest {
     }
 
     @Test
-    public void createTagTestTrue() throws ServiceException{
+    public void createTagTestTrue() throws ServiceException {
         when(repository.create(any(Tag.class))).thenReturn("/tag/" + tagDtos.get(0).getName());
         String path = service.create(tagDtos.get(0));
         service.create(tagDtos.get(1));

@@ -33,7 +33,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public String create(CertificateDto certDto) throws ServiceException {
         if (certDto.getName() != null && certDto.getPrice() != null) {
-            return repository.create(converter.dtoConvert(certDto));
+            return repository.create(converter.dtoConvertForSaving(certDto));
         } else {
             throw new ServiceException("Can't create new certificate. Name or price is expected.");
         }

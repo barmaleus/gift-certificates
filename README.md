@@ -42,3 +42,5 @@ HTTPS protocol added.
 Logger fixed.
 
 Postman Collection with APIs added to 'data' folder.
+
+Transaction tests.

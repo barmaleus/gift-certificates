@@ -8,13 +8,7 @@ public class CertificateConverter implements CommonConverter<Certificate, Certif
     public Certificate dtoConvert(CertificateDto certDto) {
         Certificate cert = new Certificate();
         cert.setId(certDto.getCertificateId());
-        cert.setName(certDto.getName());
-        cert.setDescription(certDto.getDescription());
-        cert.setPrice(certDto.getPrice());
-        cert.setCreationDate(certDto.getCreationDate());
-        cert.setModificationDate(certDto.getModificationDate());
-        cert.setExpirationDays(certDto.getExpirationDays());
-        return cert;
+        return initCertificateFields(certDto, cert);
     }
 
     @Override
@@ -29,4 +23,21 @@ public class CertificateConverter implements CommonConverter<Certificate, Certif
         certDto.setExpirationDays(cert.getExpirationDays());
         return certDto;
     }
+
+    public Certificate dtoConvertForSaving(CertificateDto certDto) {
+        Certificate cert = new Certificate();
+        return initCertificateFields(certDto, cert);
+    }
+
+    private Certificate initCertificateFields(CertificateDto certDto, Certificate cert) {
+        cert.setName(certDto.getName());
+        cert.setDescription(certDto.getDescription());
+        cert.setPrice(certDto.getPrice());
+        cert.setCreationDate(certDto.getCreationDate());
+        cert.setModificationDate(certDto.getModificationDate());
+        cert.setExpirationDays(certDto.getExpirationDays());
+        return cert;
+    }
+
+
 }

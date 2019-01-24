@@ -6,6 +6,8 @@ import by.rekuts.giftcertificates.repository.repos.TagRepository;
 import by.rekuts.giftcertificates.repository.repos.impl.CertificateRepositoryImpl;
 import by.rekuts.giftcertificates.repository.repos.impl.TagRepositoryImpl;
 import by.rekuts.giftcertificates.repository.specs.CertificateSpecification;
+import by.rekuts.giftcertificates.service.CertificateService;
+import by.rekuts.giftcertificates.service.ServiceException;
 import by.rekuts.giftcertificates.service.converter.CertificateConverter;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
 import by.rekuts.giftcertificates.service.impl.CertificateServiceImpl;

@@ -29,7 +29,7 @@ public class TagRepositoryTest {
         Tag tag = new Tag();
         tag.setName("tratatag1");
         String path = repository.create(tag);
-        Assert.assertEquals("/tag/tratatag1", path);
+        Assert.assertEquals("/tags/tratatag1", path);
     }
 
     @Test
