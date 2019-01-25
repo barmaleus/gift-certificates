@@ -56,7 +56,7 @@ public class TagController {
      *     }
      */
     @PostMapping(value = "/tags", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resource> createTag(@RequestBody TagDto newTag) throws ServiceException {
+    public ResponseEntity<Resource> createTag(@RequestBody TagDto newTag, String csrfToken) throws ServiceException {
         TagDto tagDto = service.getTagByName(newTag.getName());
         if (tagDto != null) {
             throw new ServiceException("Cannot crete new tag. Such tag exists.");
@@ -64,8 +64,8 @@ public class TagController {
             String relativePathToCreatedElement = service.create(newTag);
             TagDto resultTagDto = service.getTagByName(newTag.getName());
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Location", relativePathToCreatedElement);
+            HttpHeaders headers = new ControllerHelper()
+                    .addHeadersToResponseWhileCreateEntity(relativePathToCreatedElement, csrfToken);
 
             List<Link> links = getLinksForSingleTag(resultTagDto);
 
@@ -74,18 +74,19 @@ public class TagController {
     }
 
     @DeleteMapping(value = "/tags/id/{tagId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagDto> deleteTagById(@PathVariable("tagId") String tagId) {
-        int id = Integer.parseInt(tagId);
-        service.delete(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    public ResponseEntity deleteTagById(@PathVariable("tagId") String tagId, String csrfToken) {
+        return new ControllerHelper().deleteEntityById(service, tagId, csrfToken);
     }
 
     @DeleteMapping(value = "/tags/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagDto> deleteTagByName(@PathVariable("name") String name) throws ServiceException{
+    public ResponseEntity<TagDto> deleteTagByName(@PathVariable("name") String name, String csrfToken) throws ServiceException{
         TagDto tagDto = service.getTagByName(name);
         if (tagDto != null) {
             service.delete(tagDto.getTagId());
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+            HttpHeaders headers = new ControllerHelper().addHeadersToSimpleResponse(csrfToken);
+
+            return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
         } else {
             throw new ServiceException("Cannot delete tag. Tag with such name does not exist.");
         }
@@ -93,15 +94,15 @@ public class TagController {
 
     private List<Link> getLinksForTagsList() throws ServiceException {
         Link selfLink = linkTo(TagController.class).slash("tags").withSelfRel();
-        Link createLink = linkTo(methodOn(TagController.class).createTag(new TagDto())).withRel("create-tag");
+        Link createLink = linkTo(methodOn(TagController.class).createTag(new TagDto(), null)).withRel("create-tag");
         Link certsLink = linkTo(CertificateController.class).slash("certificates").withRel("all-certs").expand();
         return Arrays.asList(selfLink, createLink, certsLink);
     }
 
     private List<Link> getLinksForSingleTag(TagDto dto) throws ServiceException {
         Link selfLink = linkTo(TagController.class).slash("tags/" + dto.getName()).withSelfRel();
-        Link deleteLink1 = linkTo(methodOn(TagController.class).deleteTagByName(dto.getName())).withRel("delete-by-name");
-        Link deleteLink2 = linkTo(methodOn(TagController.class).deleteTagById(String.valueOf(dto.getTagId()))).withRel("delete-by-id");
+        Link deleteLink1 = linkTo(methodOn(TagController.class).deleteTagByName(dto.getName(), null)).withRel("delete-by-name");
+        Link deleteLink2 = linkTo(methodOn(TagController.class).deleteTagById(String.valueOf(dto.getTagId()), null)).withRel("delete-by-id");
         Link tagsLink = linkTo(methodOn(TagController.class).getTags()).withRel("all-tags");
         return Arrays.asList(selfLink, deleteLink1, deleteLink2, tagsLink);
     }

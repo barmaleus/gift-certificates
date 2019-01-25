@@ -22,7 +22,20 @@
 									"",
 									"pm.test(\"Returned right json-object\", function () {",
 									"    pm.expect(jsonData.name).to.eql(\"funny\");",
-									"});"
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f6f38486-3df1-4dd3-8336-2138b98456cc",
+								"exec": [
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -70,7 +83,10 @@
 									"var jsonData = pm.response.json();",
 									"pm.test(\"Returned right json-object\", function () {",
 									"    pm.expect(jsonData.content.length).to.be.above(1000);",
-									"});"
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -129,7 +145,10 @@
 									"",
 									"var jsonData = pm.response.json();",
 									"postman.setEnvironmentVariable(\"tagId\", jsonData.tagId);",
-									"postman.setEnvironmentVariable(\"tagName\", jsonData.name);"
+									"postman.setEnvironmentVariable(\"tagName\", jsonData.name);",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -147,6 +166,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
 								"type": "text"
 							}
 						],
@@ -187,7 +211,10 @@
 							"script": {
 								"id": "6053b61a-5e0b-49e6-9d34-36df3d3b9781",
 								"exec": [
-									"tests[\"Status code is 202\"] = responseCode.code === 202;"
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -205,6 +232,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
 								"type": "text"
 							}
 						],
@@ -233,7 +265,10 @@
 							"script": {
 								"id": "605f873c-01ee-4898-a2d1-243baba6d636",
 								"exec": [
-									"tests[\"Status code is 202\"] = responseCode.code === 202;"
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -251,6 +286,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
 								"type": "text"
 							}
 						],
@@ -292,7 +332,10 @@
 									"    pm.expect(jsonData.name).to.eql(\"American Hustle\");",
 									"    pm.expect(jsonData.price).to.eql(596.95);",
 									"    pm.expect(jsonData.expirationDays).to.eql(46);",
-									"});"
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -340,7 +383,10 @@
 									"var jsonData = pm.response.json();",
 									"pm.test(\"Returned right json-object\", function () {",
 									"    pm.expect(jsonData.content.length).to.be.above(10000);",
-									"});"
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -381,7 +427,10 @@
 							"script": {
 								"id": "4c0f5bc2-20f4-44aa-aa9c-49c2147fb63b",
 								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -441,8 +490,10 @@
 									"    pm.response.to.have.header(\"Location\", \"/certificates/\" + jsonData.name);",
 									"});",
 									"",
-									"// postman.setEnvironmentVariable(\"certId\", jsonData.certId);",
-									""
+									"postman.setEnvironmentVariable(\"certId\", jsonData.certificateId);",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -461,6 +512,11 @@
 								"name": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -468,14 +524,14 @@
 							"raw": "{\r\n\t\"name\": \"Unique certificate name12314\",\r\n\t\"description\": \"Description that could be null\",\r\n\t\"price\": 500,\r\n\t\"expirationDays\": 13\r\n}"
 						},
 						"url": {
-							"raw": "https://localhost:1111/certificate",
+							"raw": "https://localhost:1111/certificates",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "1111",
 							"path": [
-								"certificate"
+								"certificates"
 							]
 						}
 					},
@@ -497,7 +553,9 @@
 									"    pm.expect(jsonData.price).to.eql(1168.40);",
 									"    pm.expect(jsonData.expirationDays).to.eql(26);",
 									"});",
-									""
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -515,6 +573,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
 								"type": "text"
 							}
 						],
@@ -546,7 +609,10 @@
 							"script": {
 								"id": "81a13ed9-a4a2-4048-b393-aa32ed2243af",
 								"exec": [
-									"tests[\"Status code is 202\"] = responseCode.code === 202;"
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -564,6 +630,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
 								"type": "text"
 							}
 						],
@@ -601,7 +672,10 @@
 									"var jsonData = pm.response.json();",
 									"pm.test(\"Returned right json-object\", function () {",
 									"    pm.expect(jsonData.login).to.eql(\"user1\");",
-									"});"
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -648,7 +722,10 @@
 									"var jsonData = pm.response.json();",
 									"pm.test(\"Returned right json-object\", function () {",
 									"    pm.expect(jsonData.content.length).to.be.above(1000);",
-									"});"
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -697,7 +774,10 @@
 									"    pm.response.to.have.header(\"Location\", \"/users/\" + jsonData.name);",
 									"});",
 									"",
-									"postman.setEnvironmentVariable(\"userId\", jsonData.userId);"
+									"postman.setEnvironmentVariable(\"userId\", jsonData.userId);",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -715,6 +795,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
 								"type": "text"
 							}
 						],
@@ -750,7 +835,9 @@
 									"pm.test(\"Returned right json-object\", function () {",
 									"    pm.expect(jsonData.login).to.eql(\"user100500\");",
 									"});",
-									""
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -768,6 +855,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
 								"type": "text"
 							}
 						],
@@ -798,7 +890,10 @@
 							"script": {
 								"id": "b68cf186-5922-4684-b57f-380204c36468",
 								"exec": [
-									"tests[\"Status code is 202\"] = responseCode.code === 202;"
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
 								],
 								"type": "text/javascript"
 							}
@@ -816,6 +911,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
 								"type": "text"
 							}
 						],
@@ -854,6 +954,18 @@
 							"\r",
 							"response = JSON.parse(responseBody);\r",
 							"postman.setEnvironmentVariable(\"accessToken\", response.access_token);\r",
+							"\r",
+							"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");\r",
+							"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d83fa8f8-25b9-49b8-b7bc-91dcfda67580",
+						"exec": [
 							""
 						],
 						"type": "text/javascript"

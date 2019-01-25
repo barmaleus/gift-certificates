@@ -69,13 +69,13 @@ public class CertificateController {
      */
     @PostMapping(value = "/certificates", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createCertificate(
-            @RequestBody CertificateDto newCertificate) throws ServiceException {
+            @RequestBody CertificateDto newCertificate, String csrfToken) throws ServiceException {
         String relativePathToCreatedElement = service.create(newCertificate);
         int certId = new ControllerHelper().getIdFromUrl(relativePathToCreatedElement);
         CertificateDto resultCertificate = service.getCertById(certId);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", relativePathToCreatedElement);
+        HttpHeaders headers = new ControllerHelper()
+                .addHeadersToResponseWhileCreateEntity(relativePathToCreatedElement, csrfToken);
 
         List<Link> links = getLinksForSingleCertificate(resultCertificate);
 
@@ -85,27 +85,27 @@ public class CertificateController {
     @PutMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateCertificate(
             @PathVariable("certId") String certId,
-            @RequestBody CertificateDto upCertificate) throws ServiceException {
+            @RequestBody CertificateDto upCertificate, String csrfToken) throws ServiceException {
         int id = Integer.parseInt(certId);
         upCertificate.setCertificateId(id);
         service.update(upCertificate);
 
+        HttpHeaders headers = new ControllerHelper().addHeadersToSimpleResponse(csrfToken);
+
         List<Link> links = getLinksForSingleCertificate(upCertificate);
 
-        return new ResponseEntity<>(new Resource<>(upCertificate, links), HttpStatus.OK);
+        return new ResponseEntity<>(new Resource<>(upCertificate, links), headers, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CertificateDto> deleteCertificateById(@PathVariable("certId") String certId) {
-        int id = Integer.parseInt(certId);
-        service.delete(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    public ResponseEntity deleteCertificateById(@PathVariable("certId") String certId, String csrfToken) {
+        return new ControllerHelper().deleteEntityById(service, certId, csrfToken);
     }
 
     private List<Link> getLinksForCertificatesList() throws ServiceException {
         Link selfLink = linkTo(CertificateController.class).slash("certificates").withSelfRel();
         Link createLink = linkTo(methodOn(CertificateController.class)
-                .createCertificate(new CertificateDto())).withRel("create-certificate");
+                .createCertificate(new CertificateDto(), null)).withRel("create-certificate");
         Link tagsLink = linkTo(TagController.class).slash("tags").withRel("all-tags");
         return Arrays.asList(selfLink, createLink, tagsLink);
     }
@@ -113,9 +113,9 @@ public class CertificateController {
     private List<Link> getLinksForSingleCertificate(CertificateDto dto) throws ServiceException {
         Link selfLink = linkTo(CertificateController.class).slash("certificates/" + dto.getCertificateId()).withSelfRel();
         Link updateLink = linkTo(methodOn(CertificateController.class)
-                .updateCertificate(String.valueOf(dto.getCertificateId()), new CertificateDto())).withRel("update-certificate");
+                .updateCertificate(String.valueOf(dto.getCertificateId()), new CertificateDto(), null)).withRel("update-certificate");
         Link deleteLink = linkTo(methodOn(CertificateController.class)
-                .deleteCertificateById(String.valueOf(dto.getCertificateId()))).withRel("delete-certificate");
+                .deleteCertificateById(String.valueOf(dto.getCertificateId()), null)).withRel("delete-certificate");
         Link certsLink = linkTo(methodOn(CertificateController.class)
                 .getCertificates(null, null)).withRel("all-certificates").expand();
         return Arrays.asList(selfLink, updateLink, deleteLink, certsLink);

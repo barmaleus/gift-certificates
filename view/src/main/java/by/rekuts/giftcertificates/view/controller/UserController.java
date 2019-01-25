@@ -56,13 +56,13 @@ public class UserController {
      *     }
      */
     @PostMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resource> createUser(@RequestBody UserDto newUser) throws ServiceException {
+    public ResponseEntity<Resource> createUser(@RequestBody UserDto newUser, String csrfToken) throws ServiceException {
         String relativePathToCreatedElement = service.create(newUser);
         int userId = new ControllerHelper().getIdFromUrl(relativePathToCreatedElement);
         UserDto resultUser = service.getUserById(userId);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", relativePathToCreatedElement);
+        HttpHeaders headers = new ControllerHelper()
+                .addHeadersToResponseWhileCreateEntity(relativePathToCreatedElement, csrfToken);
 
         List<Link> links = getLinksForSingleUser(resultUser);
 
@@ -72,26 +72,26 @@ public class UserController {
     @PutMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateUser (
             @PathVariable("id") String userId,
-            @RequestBody UserDto upUser) throws ServiceException {
+            @RequestBody UserDto upUser, String csrfToken) throws ServiceException {
         int id = Integer.parseInt(userId);
         upUser.setUserId(id);
         service.update(upUser);
 
+        HttpHeaders headers = new ControllerHelper().addHeadersToSimpleResponse(csrfToken);
+
         List<Link> links = getLinksForSingleUser(upUser);
 
-        return new ResponseEntity<>(new Resource<>(upUser, links), HttpStatus.CREATED);
+        return new ResponseEntity<>(new Resource<>(upUser, links), headers, HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDto> deleteUserById(@PathVariable("id") String userId) {
-        int id = Integer.parseInt(userId);
-        service.delete(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    public ResponseEntity deleteUserById(@PathVariable("id") String userId, String csrfToken) {
+        return new ControllerHelper().deleteEntityById(service, userId, csrfToken);
     }
 
     private List<Link> getLinksForUsersList() throws ServiceException {
         Link selfLink = linkTo(UserController.class).slash("users").withSelfRel();
-        Link createLink = linkTo(methodOn(UserController.class).createUser(new UserDto())).withRel("create-user");
+        Link createLink = linkTo(methodOn(UserController.class).createUser(new UserDto(), null)).withRel("create-user");
         Link tagsLink = linkTo(TagController.class).slash("tags").withRel("all-tags").expand();
         Link certsLink = linkTo(CertificateController.class).slash("certificates").withRel("all-certs").expand();
         return Arrays.asList(selfLink, createLink, tagsLink, certsLink);
@@ -100,8 +100,8 @@ public class UserController {
     private List<Link> getLinksForSingleUser(UserDto dto) throws ServiceException {
         Link selfLink = linkTo(UserController.class).slash("users/" + dto.getUserId()).withSelfRel();
         Link updateLink = linkTo(methodOn(UserController.class)
-                .updateUser(String.valueOf(dto.getUserId()), new UserDto())).withRel("update-user");
-        Link deleteLink = linkTo(methodOn(UserController.class).deleteUserById(String.valueOf(dto.getUserId())))
+                .updateUser(String.valueOf(dto.getUserId()), new UserDto(), null)).withRel("update-user");
+        Link deleteLink = linkTo(methodOn(UserController.class).deleteUserById(String.valueOf(dto.getUserId()), null))
                 .withRel("delete-user");
         Link usersLink = linkTo(methodOn(UserController.class).getUsers()).withRel("all-users");
         return Arrays.asList(selfLink, updateLink, deleteLink, usersLink);
