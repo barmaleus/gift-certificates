@@ -1,11 +1,12 @@
 package by.rekuts.giftcertificates.repository.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "gift_tag")
-public class Tag {
+public class Tag implements Serializable {
     @Id
     @SequenceGenerator(name = "certSequence", sequenceName = "gift_tag_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certSequence")

@@ -10,8 +10,8 @@ import java.util.Map;
 public class RestOauth2EntryPoint extends OAuth2AuthenticationEntryPoint {
 
     @Override
-    protected ResponseEntity<?> enhanceResponse(ResponseEntity<?> response, Exception exception) {
-        ResponseEntity<?> superEntity = super.enhanceResponse(response, exception);
+    protected ResponseEntity enhanceResponse(ResponseEntity response, Exception exception) {
+        ResponseEntity superEntity = super.enhanceResponse(response, exception);
         ExceptionResponseBody responseBody = new ExceptionResponseBody(response, exception);
         Map<String, Object> responseBodyMap = responseBody.getResponseBodyMap();
 

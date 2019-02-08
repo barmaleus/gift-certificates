@@ -46,3 +46,5 @@ Postman Collection with APIs added to 'data' folder.
 Transaction tests.
 
 CSRF protection.
+
+Added optional to service and some oauth scope protection

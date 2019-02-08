@@ -3,6 +3,11 @@ apply plugin: 'java'
 bootJar {
   baseName = 'gift-certificates'
   version = '1.0-SNAPSHOT'
+  enabled = true
+}
+
+jar {
+  enabled = true
 }
 
 dependencies {
@@ -10,7 +15,6 @@ dependencies {
   compile project(':service')
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
   compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.3.4.RELEASE'
-//  compile group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure'
   compile group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.0.9.RELEASE'
   compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 

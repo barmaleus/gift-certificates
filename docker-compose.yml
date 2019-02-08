@@ -5,7 +5,7 @@ services:
   postgres-db:
     container_name: postgres
     image: postgres:9.6.10
-    restart: always
+    restart: no
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -26,7 +26,7 @@ services:
       - './repository/src/main/resources:/var/lib/pgadmin/storage/postgres'
     ports:
       - "80:80"
-    restart: unless-stopped
+    restart: no
 
 volumes:
   data:

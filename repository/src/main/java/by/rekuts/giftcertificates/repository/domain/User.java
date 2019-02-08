@@ -5,6 +5,7 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "gift_user")
@@ -28,6 +29,14 @@ public class User implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, name = "role")
 	private UserRole role;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(
+			name = "gift_certificate",
+			joinColumns = { @JoinColumn(name = "user_id") },
+			inverseJoinColumns = { @JoinColumn(name = "certificate_id") }
+	)
+	private List<Certificate> certificates;
 
 	public User(int id, String login, String password) {
 		this.id = id;

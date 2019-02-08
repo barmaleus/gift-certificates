@@ -1,17 +1,14 @@
-buildscript {
-  repositories {
-    mavenCentral()
-  }
 
-  dependencies {
-    ext { springBootVersion = '2.1.1.RELEASE' }
-    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") }
-  }
+plugins {
+  id "org.springframework.boot" version "2.1.2.RELEASE"
+  id "org.sonarqube" version "2.7"
 }
 
 
 allprojects  {
   apply plugin: 'maven'
+  apply plugin: "org.sonarqube"
+  apply plugin: 'jacoco'
 
   group = 'by.rekuts.giftcertificates'
   version = '1.0-SNAPSHOT'
@@ -26,16 +23,35 @@ subprojects {
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
 
-  
+  sonarqube {
+    properties {
+      property "sonar.projectBaseDir", "$projectDir"
+    }
+  }
+
+  jacoco {
+    toolVersion = "0.8.1"
+    reportsDir = file("$buildDir/jacocoReportDir")
+  }
+
+  jacocoTestReport {
+    reports {
+      xml.enabled false
+      csv.enabled false
+      html.destination file("${buildDir}/jacocoHtml")
+    }
+  }
+
+
   repositories {
     mavenLocal()
     mavenCentral()
   }
 
-  
+
   dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   }
-  
+
 }

@@ -15,7 +15,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
-public class CertificateRepositoryImpl implements CertificateRepository {
+public class  CertificateRepositoryImpl implements CertificateRepository {
     private static final String BASE_CERTIFICATE_PATH = "/certificates";
 
     @PersistenceContext

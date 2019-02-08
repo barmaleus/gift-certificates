@@ -4,6 +4,7 @@ import by.rekuts.giftcertificates.view.exceptionhandlers.RestAccessDeniedHandler
 import by.rekuts.giftcertificates.view.exceptionhandlers.RestOauth2EntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -34,13 +35,27 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .requiresChannel()
                 .anyRequest().requiresSecure();
 
-        http.
-                httpBasic().disable()
+        http
+                .httpBasic().disable()
                 .formLogin().disable()
                 .logout().disable()
-                .anonymous().disable()
                 .authorizeRequests()
-                .antMatchers("/users", "/users/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/tags", "/tags/**", "/users", "/users/**")
+                        .access("#oauth2.hasScope('read')")    //todo buy certs
+
+                .antMatchers(HttpMethod.GET, "/certificates", "/certificates/**").permitAll()
+
+                .antMatchers(HttpMethod.POST, "/certificates", "/tags")
+                        .access("#oauth2.hasScope('write')")
+
+                .antMatchers(HttpMethod.POST, "/users").permitAll()
+
+                .antMatchers(HttpMethod.DELETE, "/certificates/**", "/tags/**", "/users/**")
+                        .access("#oauth2.hasScope('write')")
+
+                .antMatchers(HttpMethod.PUT, "/certificates/**", "/tags/**", "/users/**")
+                        .access("#oauth2.hasScope('write')")
+
                 .anyRequest().authenticated()
                 .and().exceptionHandling().accessDeniedHandler(oauthAccessDeniedHandler())
                 .and().exceptionHandling().authenticationEntryPoint(oAuth2AuthenticationEntryPoint());

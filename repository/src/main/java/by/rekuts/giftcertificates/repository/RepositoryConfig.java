@@ -38,7 +38,7 @@ public class RepositoryConfig {
         config.setUsername("postgres");
         config.setPassword("postgres");
         config.addDataSourceProperty("databaseName", "gcerts");
-        config.addDataSourceProperty("serverName", "127.0.0.1");
+        config.addDataSourceProperty("serverName", "localhost");
         return new HikariDataSource(config);
     }
     @Bean

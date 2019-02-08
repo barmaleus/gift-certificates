@@ -8,7 +8,9 @@ import by.rekuts.giftcertificates.service.UserService;
 import by.rekuts.giftcertificates.service.converter.UserConverter;
 import by.rekuts.giftcertificates.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,10 +38,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<User> singletonUserList = repository.getList(new UserSpecification(username));
-        if(singletonUserList.size() == 0) {
+        if(singletonUserList.isEmpty()) {
             throw new UsernameNotFoundException(username + "not found");
         }
         User user = singletonUserList.get(0);
+        UsernamePasswordAuthenticationToken authenticationToken
+                = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        authenticationToken.getAuthorities();
+        System.out.println("blabla|| " + authenticationToken.getAuthorities()); //todo do
+        System.out.println(authenticationToken);
+        if (user.getRole().name().equals("ADMIN")) {
+        }
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(),
                 user.getPassword(),
@@ -80,30 +89,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getList() {
-        List<User> users = repository.getList(new UserSpecification());
-        return users.stream()
+        return repository
+                .getList(new UserSpecification())
+                .stream()
                 .map(converter::domainConvert)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDto getUserById(int id) {
-        List<User> users = repository.getList(new UserSpecification(id));
-        return getUserDtoFromSingletonUserList(users);
+        return repository
+                .getList(new UserSpecification(id))
+                .stream()
+                .map(converter::domainConvert)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public UserDto getUserByLogin(String login) {
-        List<User> users = repository.getList(new UserSpecification(login));
-        return getUserDtoFromSingletonUserList(users);
+        return repository
+                .getList(new UserSpecification(login))
+                .stream()
+                .map(converter::domainConvert)
+                .findFirst()
+                .orElse(null);
     }
 
-    private UserDto getUserDtoFromSingletonUserList(List<User> users) {
-        if(users.size() != 0) {
-            User user = users.get(0);
-            return converter.domainConvert(user);
-        } else {
-            return null;
-        }
-    }
 }

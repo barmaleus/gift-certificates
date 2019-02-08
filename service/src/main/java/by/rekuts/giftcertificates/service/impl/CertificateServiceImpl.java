@@ -1,6 +1,5 @@
 package by.rekuts.giftcertificates.service.impl;
 
-import by.rekuts.giftcertificates.repository.domain.Certificate;
 import by.rekuts.giftcertificates.repository.repos.CertificateRepository;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
 import by.rekuts.giftcertificates.repository.specs.CertificateSpecification;
@@ -57,29 +56,29 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<CertificateDto> getList() {
-        List<Certificate> certificates = repository.getList(new CertificateSpecification());
-        return certificates.stream()
+        return repository
+                .getList(new CertificateSpecification())
+                .stream()
                 .map(converter::domainConvert)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<CertificateDto> getList(Map<String, String> params) {
-        CertificateSpecification specification = new CertificateSpecification(params, tagRepository);
-        List<Certificate> certificates = repository.getList(specification);
-        return certificates.stream()
+        return repository
+                .getList(new CertificateSpecification(params, tagRepository))
+                .stream()
                 .map(converter::domainConvert)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CertificateDto getCertById(int id) {
-        List<Certificate> certificates = repository.getList(new CertificateSpecification(id));
-        if (certificates.size() != 0) {
-            Certificate certificate = certificates.get(0);
-            return converter.domainConvert(certificate);
-        } else {
-            return null;
-        }
+        return repository
+                .getList(new CertificateSpecification(id))
+                .stream()
+                .map(converter::domainConvert)
+                .findFirst()
+                .orElse(null);
     }
 }

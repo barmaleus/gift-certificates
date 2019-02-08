@@ -74,6 +74,13 @@ CREATE TABLE public.tag_certificate (
 
 ALTER TABLE public.tag_certificate OWNER TO postgres;
 
+CREATE TABLE public.user_certificate (
+    user_id integer NOT NULL,
+    certificate_id integer NOT NULL
+);
+
+ALTER TABLE public.user_certificate OWNER TO postgres;
+
 ALTER TABLE ONLY public.gift_user ALTER COLUMN id SET DEFAULT nextval('public.gift_user_id_seq'::regclass);
 
 ALTER TABLE ONLY public.gift_certificate ALTER COLUMN id SET DEFAULT nextval('public.gift_certificate_id_seq'::regclass);
@@ -92,6 +99,9 @@ ALTER TABLE ONLY public.gift_certificate
 ALTER TABLE ONLY public.tag_certificate
     ADD CONSTRAINT tag_certificate_pk UNIQUE (tag_id, certificate_id);
 
+    ALTER TABLE ONLY public.user_certificate
+        ADD CONSTRAINT user_certificate_pk UNIQUE (user_id, certificate_id);
+
 ALTER TABLE ONLY public.gift_tag
     ADD CONSTRAINT tag_pkey PRIMARY KEY (id);
 
@@ -104,3 +114,9 @@ ALTER TABLE ONLY public.tag_certificate
 
 ALTER TABLE ONLY public.tag_certificate
     ADD CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES public.gift_tag(id);
+
+    ALTER TABLE ONLY public.user_certificate
+        ADD CONSTRAINT certificate_fk FOREIGN KEY (certificate_id) REFERENCES public.gift_certificate(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+    ALTER TABLE ONLY public.user_certificate
+        ADD CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES public.gift_user(id);

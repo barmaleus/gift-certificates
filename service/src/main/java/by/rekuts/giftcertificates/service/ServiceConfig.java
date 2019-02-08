@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.security.NoSuchAlgorithmException;
-
 @Configuration
 @ComponentScan(basePackages = "by.rekuts.giftcertificates.service")
 public class ServiceConfig {
@@ -30,7 +28,7 @@ public class ServiceConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

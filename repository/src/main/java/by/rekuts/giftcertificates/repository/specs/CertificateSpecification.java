@@ -2,11 +2,8 @@ package by.rekuts.giftcertificates.repository.specs;
 
 import by.rekuts.giftcertificates.repository.domain.Tag;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;

@@ -1,13 +1,14 @@
 package by.rekuts.giftcertificates.repository.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "gift_certificate")
-public class Certificate {
+public class Certificate implements Serializable {
     @Id
     @SequenceGenerator(name = "certSequence", sequenceName = "gift_certificate_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certSequence")
@@ -32,6 +33,9 @@ public class Certificate {
 
     @ManyToMany(mappedBy = "certificates", cascade = CascadeType.ALL)
     private List<Tag> tags;
+
+    @ManyToMany(mappedBy = "certificates", cascade = CascadeType.ALL)
+    private List<User> users;
 
     @PrePersist
     public void onPrePersist() {
