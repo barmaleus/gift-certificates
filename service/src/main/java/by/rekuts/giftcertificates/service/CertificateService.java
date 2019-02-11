@@ -10,7 +10,7 @@ public interface CertificateService extends CrudService<CertificateDto> {
     /**
      * @return list of all certificateDto objects from database
      */
-    List<CertificateDto> getList(Map<String, String> params, Integer page, Integer itemsPerPage);
+    List<CertificateDto> getList(Map<String, String[]> params, Integer page, Integer itemsPerPage);
 
     /**
      * @return certificateDto object from database reached by id

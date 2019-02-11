@@ -8,3 +8,5 @@ INSERT INTO public.gift_tag (id, name) VALUES (19, 'tratata');
 INSERT INTO public.gift_user (id, login, password, role) VALUES (1, 'user1', 'user1', 'USER');
 INSERT INTO public.gift_user (id, login, password, role) VALUES (2, 'user2', 'user2', 'USER');
 INSERT INTO public.tag_certificate (tag_id, certificate_id) VALUES (1, 1);
+INSERT INTO public.tag_certificate (tag_id, certificate_id) VALUES (8, 71);
+INSERT INTO public.tag_certificate (tag_id, certificate_id) VALUES (19, 71);

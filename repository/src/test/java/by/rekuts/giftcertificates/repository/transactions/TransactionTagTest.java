@@ -31,10 +31,10 @@ import static org.junit.Assert.assertFalse;
 public class TransactionTagTest {
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Autowired
-    TagRepository repository;
+    private TagRepository repository;
 
     private int count;
 

@@ -28,10 +28,10 @@ import static org.junit.Assert.*;
 public class TransactionCertificateTest {
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Autowired
-    CertificateRepository repository;
+   private CertificateRepository repository;
 
     private int count;
     private Certificate certBeforeTransaction;

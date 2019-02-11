@@ -42,14 +42,14 @@ public class CertificateController {
 
     @GetMapping(value = "/certificates", produces = MediaType.APPLICATION_JSON_VALUE)
     public Resources<CertificateDto> getCertificates (
-            @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "tag", required = false) String[] tag,
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", defaultValue = "1") String page,
             @RequestParam(value = "item", defaultValue = "10") String item) throws ServiceException{
 
-        Map<String, String> params = new HashMap<>();
+        Map<String, String[]> params = new HashMap<>();
         if(tag != null) { params.put("tag", tag); }
-        if(search != null) { params.put("search", search); }
+        if(search != null) { params.put("search", new String[]{search}); }
         int pageInt = new ControllerHelper().checkParameter(page);
         int itemInt = new ControllerHelper().checkParameter(item);
 

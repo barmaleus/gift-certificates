@@ -64,7 +64,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<CertificateDto> getList(Map<String, String> params, Integer page, Integer itemsPerPage) {
+    public List<CertificateDto> getList(Map<String, String[]> params, Integer page, Integer itemsPerPage) {
         return repository
                 .getList(new CertificateSpecification(tagRepository, params), page, itemsPerPage)
                 .stream()

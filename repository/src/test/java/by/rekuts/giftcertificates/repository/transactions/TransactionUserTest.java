@@ -28,10 +28,10 @@ import static org.junit.Assert.assertEquals;
 public class TransactionUserTest {
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Autowired
-    UserRepository repository;
+    private UserRepository repository;
 
     private int count;
     private User userBeforeTransaction;

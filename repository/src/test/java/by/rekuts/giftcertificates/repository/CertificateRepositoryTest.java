@@ -60,9 +60,9 @@ public class CertificateRepositoryTest {
 
     @Test
     public void getCertsByTagSearchTestTrue() {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put("tag", "wedding");
-            put("search", "dress");
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("tag", new String[]{"wedding"});
+            put("search", new String[]{"dress"});
         }};
 
         List<Certificate> certificates = repository.getList(new CertificateSpecification(tagRepository, params), null, null);
@@ -72,9 +72,31 @@ public class CertificateRepositoryTest {
     }
 
     @Test
+    public void getCertsByMultipleTagsTestTrue() {
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("tag", new String[]{"tratatag", "tratata"});
+        }};
+
+        List<Certificate> certificates = repository.getList(new CertificateSpecification(tagRepository, params), null, null);
+        Assert.assertEquals(1, certificates.size());
+        Assert.assertEquals("Certificate for 50% sale for dress1", certificates.get(0).getName());
+        Assert.assertEquals(71, certificates.get(0).getId().intValue());
+    }
+
+    @Test
+    public void getCertsByMultipleTagsTestFalse() {
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("tag", new String[]{"tratatag", "tratata", "wedding"});
+        }};
+
+        List<Certificate> certificates = repository.getList(new CertificateSpecification(tagRepository, params), null, null);
+        Assert.assertEquals(0, certificates.size());
+    }
+
+    @Test
     public void getCertsByBadTagTest() {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put("tag", "wedding-wedding");
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("tag", new String[]{"wedding-wedding"});
         }};
 
         List<Certificate> certificates = repository.getList(new CertificateSpecification(tagRepository, params), null, null);
@@ -83,8 +105,8 @@ public class CertificateRepositoryTest {
 
     @Test
     public void getCertsBySearchTestTrue() {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put("search", "dress1");
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("search", new String[]{"dress1"});
         }};
         CertificateSpecification specification = new CertificateSpecification(tagRepository, params);
         List<Certificate> certificates = repository.getList(specification, null, null);
@@ -95,8 +117,8 @@ public class CertificateRepositoryTest {
 
     @Test
     public void getCertsBySearchTestTrue2() {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put("search", "dress");
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("search", new String[]{"dress"});
         }};
         CertificateSpecification specification = new CertificateSpecification(tagRepository, params);
         List<Certificate> certificates = repository.getList(specification, null, null);
@@ -105,8 +127,8 @@ public class CertificateRepositoryTest {
 
     @Test
     public void getCertsByTagSearchTestFalse() {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put("tag", "funny");
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("tag", new String[]{"funny"});
         }};
         CertificateSpecification specification = new CertificateSpecification(tagRepository, params);
         List<Certificate> certificates = repository.getList(specification, null, null);

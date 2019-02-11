@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class CertificateSpecification extends Specification {
     private LocalDateTime creationDate;
     private LocalDateTime modificationDate;
     private Integer expirationDays;
-    private Integer tagId;
+    private List<Integer> tagsId = new ArrayList<>();
     private String searchKey;
 
     public CertificateSpecification() {}
@@ -28,16 +29,22 @@ public class CertificateSpecification extends Specification {
         this.id = id;
     }
 
-    public CertificateSpecification(TagRepository repository, Map<String, String> params) {
+    public CertificateSpecification(TagRepository repository, Map<String, String[]> params) {
         if(params.containsKey("tag")){
-            tagId = repository
-                    .getList(new TagSpecification(params.get("tag")), null, null)
-                    .stream()
-                    .map(Tag::getId)
-                    .findFirst()
-                    .orElse(-1);
+            String[] tagNameArray = params.get("tag");
+            for (String aTagNameArray : tagNameArray) {
+                Integer tagId = repository
+                        .getList(new TagSpecification(aTagNameArray), null, null)
+                        .stream()
+                        .map(Tag::getId)
+                        .findFirst()
+                        .orElse(-1);
+                tagsId.add(tagId);
+            }
         }
-        searchKey = params.get("search");
+        if (params.get("search") != null) {
+            searchKey = params.get("search")[0];
+        }
     }
 
     @Override
@@ -68,10 +75,11 @@ public class CertificateSpecification extends Specification {
                     builder.equal(root.get("expiration_days"), expirationDays)
             );
         }
-        if (tagId != null) {
-            predicates.add(
-                    builder.equal(root.join("tags"), tagId)
-            );
+        if (!tagsId.isEmpty()) {
+            tagsId.forEach(
+                    tagId -> predicates.add(
+                            builder.equal(root.join("tags"), tagId)
+            ));
         }
         if (searchKey != null) {
             predicates.add(
@@ -140,12 +148,12 @@ public class CertificateSpecification extends Specification {
         this.expirationDays = expirationDays;
     }
 
-    public Integer getTagId() {
-        return tagId;
+    public List<Integer> getTagsId() {
+        return tagsId;
     }
 
-    public void setTagId(Integer tagId) {
-        this.tagId = tagId;
+    public void setTags(List<Integer> tagsId) {
+        this.tagsId = tagsId;
     }
 
     public String getSearchKey() {

@@ -96,8 +96,8 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getCertsByParamsTestTrue() {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put("search", "Certificate 1");
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("search", new String[] {"Certificate 1"});
         }};
         when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(
@@ -113,8 +113,8 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getCertsByParamsTestTrue2() {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put("search", "Certificate");
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("search", new String[] {"Certificate"});
         }};
         when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(
@@ -131,8 +131,8 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getCertsByParamsTestTrue3() {
-        Map<String, String> params = new HashMap<String, String>() {{
-            put("search", "Certificate №1");
+        Map<String, String[]> params = new HashMap<String, String[]>() {{
+            put("search", new String[] {"Certificate №1"});
         }};
         when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(Collections.emptyList());
