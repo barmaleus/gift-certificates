@@ -1,5 +1,6 @@
 package by.rekuts.giftcertificates.service.impl;
 
+import by.rekuts.giftcertificates.repository.domain.Certificate;
 import by.rekuts.giftcertificates.repository.repos.CertificateRepository;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
 import by.rekuts.giftcertificates.repository.specs.CertificateSpecification;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,6 +48,18 @@ public class CertificateServiceImpl implements CertificateService {
         } else {
             throw new ServiceException("Can't update certificate. Name, price or id is expected.");
         }
+    }
+
+    @Transactional
+    @Override
+    public void changePrice(int id, BigDecimal newPrice) throws ServiceException {
+        Certificate certificate = repository
+                .getList(new CertificateSpecification(id), null, null)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new ServiceException("Can't update price. "));
+        certificate.setPrice(newPrice);
+        repository.update(certificate);
     }
 
     @Transactional

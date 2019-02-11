@@ -602,6 +602,69 @@
 					"response": []
 				},
 				{
+					"name": "Change price of certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cdcbc997-4467-4ac7-9217-2d06afd49be5",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"Shadowboxer\");",
+									"    pm.expect(jsonData.price).to.eql(1168.40);",
+									"    pm.expect(jsonData.expirationDays).to.eql(26);",
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "337.02"
+						},
+						"url": {
+							"raw": "https://localhost:1111/certificates/10069",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"certificates",
+								"10069"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete certificate",
 					"event": [
 						{

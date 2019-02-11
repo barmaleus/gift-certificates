@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -99,6 +100,25 @@ public class CertificateController {
         List<Link> links = getLinksForSingleCertificate(upCertificate);
 
         return new ResponseEntity<>(new Resource<>(upCertificate, links), headers, HttpStatus.OK);
+    }
+
+    /**
+     * Request body includes only double number without any braces, ex: 337.02
+     */
+
+    @PatchMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource> changePriceCertificate(
+            @PathVariable("certId") String certId,
+            @RequestBody BigDecimal price, String csrfToken) throws ServiceException {
+        int id = Integer.parseInt(certId);
+        service.changePrice(id, price);
+
+        HttpHeaders headers = new ControllerHelper().addHeadersToSimpleResponse(csrfToken);
+
+        CertificateDto patchedCertificate = service.getCertById(id);
+        List<Link> links = getLinksForSingleCertificate(patchedCertificate);
+
+        return new ResponseEntity<>(new Resource<>(patchedCertificate, links), headers, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
