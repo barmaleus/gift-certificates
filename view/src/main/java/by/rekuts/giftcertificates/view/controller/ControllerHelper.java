@@ -1,6 +1,7 @@
 package by.rekuts.giftcertificates.view.controller;
 
 import by.rekuts.giftcertificates.service.CrudService;
+import by.rekuts.giftcertificates.service.ServiceException;
 import by.rekuts.giftcertificates.view.security.OAuth2ResourceServerConfig;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,18 @@ class ControllerHelper {
             headers.set(OAuth2ResourceServerConfig.X_CSRF_TOKEN, csrfToken);
         }
         return headers;
+    }
+
+    int checkParameter(String param) throws ServiceException {
+        int number;
+        try {
+            number = Integer.parseInt(param);
+            if (number < 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            throw new ServiceException("wrong parameters");
+        }
+        return number;
     }
 }

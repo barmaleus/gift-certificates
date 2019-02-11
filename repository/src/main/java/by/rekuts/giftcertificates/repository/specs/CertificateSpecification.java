@@ -28,10 +28,14 @@ public class CertificateSpecification extends Specification {
         this.id = id;
     }
 
-    public CertificateSpecification(Map<String, String> params, TagRepository repository) {
+    public CertificateSpecification(TagRepository repository, Map<String, String> params) {
         if(params.containsKey("tag")){
-            Tag tag = repository.getList(new TagSpecification(params.get("tag"))).get(0);
-            tagId = tag.getId();
+            tagId = repository
+                    .getList(new TagSpecification(params.get("tag")), null, null)
+                    .stream()
+                    .map(Tag::getId)
+                    .findFirst()
+                    .orElse(-1);
         }
         searchKey = params.get("search");
     }

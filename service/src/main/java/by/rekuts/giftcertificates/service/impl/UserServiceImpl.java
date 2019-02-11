@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<User> singletonUserList = repository.getList(new UserSpecification(username));
+        List<User> singletonUserList = repository.getList(new UserSpecification(username), null, null);
         if(singletonUserList.isEmpty()) {
             throw new UsernameNotFoundException(username + "not found");
         }
@@ -88,9 +88,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getList() {
+    public List<UserDto> getList(Integer page, Integer itemsPerPage) {
         return repository
-                .getList(new UserSpecification())
+                .getList(new UserSpecification(), page, itemsPerPage)
                 .stream()
                 .map(converter::domainConvert)
                 .collect(Collectors.toList());
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(int id) {
         return repository
-                .getList(new UserSpecification(id))
+                .getList(new UserSpecification(id), null, null)
                 .stream()
                 .map(converter::domainConvert)
                 .findFirst()
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserByLogin(String login) {
         return repository
-                .getList(new UserSpecification(login))
+                .getList(new UserSpecification(login), null, null)
                 .stream()
                 .map(converter::domainConvert)
                 .findFirst()

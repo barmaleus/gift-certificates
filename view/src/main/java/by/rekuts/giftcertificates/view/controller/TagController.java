@@ -38,8 +38,12 @@ public class TagController {
     }
 
     @GetMapping(value = "/tags", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Resources<TagDto> getTags() throws ServiceException {
-        List<TagDto> tags = service.getList();
+    public Resources<TagDto> getTags(
+            @RequestParam(value = "page", defaultValue = "1") String page,
+            @RequestParam(value = "item", defaultValue = "10") String item) throws ServiceException {
+        int pageInt = new ControllerHelper().checkParameter(page);
+        int itemInt = new ControllerHelper().checkParameter(item);
+        List<TagDto> tags = service.getList(pageInt, itemInt);
 
         List<Link> links = getLinksForTagsList();
         for(TagDto tag : tags) {
@@ -103,7 +107,7 @@ public class TagController {
         Link selfLink = linkTo(TagController.class).slash("tags/" + dto.getName()).withSelfRel();
         Link deleteLink1 = linkTo(methodOn(TagController.class).deleteTagByName(dto.getName(), null)).withRel("delete-by-name");
         Link deleteLink2 = linkTo(methodOn(TagController.class).deleteTagById(String.valueOf(dto.getTagId()), null)).withRel("delete-by-id");
-        Link tagsLink = linkTo(methodOn(TagController.class).getTags()).withRel("all-tags");
+        Link tagsLink = linkTo(methodOn(TagController.class).getTags(null, null)).withRel("all-tags");
         return Arrays.asList(selfLink, deleteLink1, deleteLink2, tagsLink);
     }
 

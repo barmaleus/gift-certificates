@@ -93,6 +93,9 @@ SELECT pg_catalog.setval('public.gift_certificate_id_seq', 71, true);
 
 SELECT pg_catalog.setval('public.gift_tag_id_seq', 20, true);
 
+ALTER TABLE ONLY public.gift_user
+    ADD CONSTRAINT gift_user_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.gift_certificate
     ADD CONSTRAINT gift_certificate_pkey PRIMARY KEY (id);
 
@@ -110,13 +113,13 @@ CREATE UNIQUE INDEX gift_user_login_uindex ON public.gift_user USING btree (logi
 CREATE UNIQUE INDEX tag_name_uindex ON public.gift_tag USING btree (name);
 
 ALTER TABLE ONLY public.tag_certificate
-    ADD CONSTRAINT certificate_fk FOREIGN KEY (certificate_id) REFERENCES public.gift_certificate(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT certificate_tag_fk FOREIGN KEY (certificate_id) REFERENCES public.gift_certificate(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.tag_certificate
     ADD CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES public.gift_tag(id);
 
     ALTER TABLE ONLY public.user_certificate
-        ADD CONSTRAINT certificate_fk FOREIGN KEY (certificate_id) REFERENCES public.gift_certificate(id) ON UPDATE CASCADE ON DELETE CASCADE;
+        ADD CONSTRAINT certificate_user_fk FOREIGN KEY (certificate_id) REFERENCES public.gift_certificate(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
     ALTER TABLE ONLY public.user_certificate
         ADD CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES public.gift_user(id);

@@ -43,15 +43,19 @@ public class CertificateController {
     @GetMapping(value = "/certificates", produces = MediaType.APPLICATION_JSON_VALUE)
     public Resources<CertificateDto> getCertificates (
             @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "search", required = false) String search) throws ServiceException{
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "1") String page,
+            @RequestParam(value = "item", defaultValue = "10") String item) throws ServiceException{
 
         Map<String, String> params = new HashMap<>();
         if(tag != null) { params.put("tag", tag); }
         if(search != null) { params.put("search", search); }
+        int pageInt = new ControllerHelper().checkParameter(page);
+        int itemInt = new ControllerHelper().checkParameter(item);
 
         List<Link> links = getLinksForCertificatesList();
 
-        List<CertificateDto> certificates = params.size() == 0 ? service.getList() : service.getList(params);
+        List<CertificateDto> certificates = params.size() == 0 ? service.getList(pageInt, itemInt) : service.getList(params, pageInt, itemInt);
         for(CertificateDto certificate : certificates) {
             certificate.add(linkToSingleCertificate(certificate));
         }
@@ -117,7 +121,7 @@ public class CertificateController {
         Link deleteLink = linkTo(methodOn(CertificateController.class)
                 .deleteCertificateById(String.valueOf(dto.getCertificateId()), null)).withRel("delete-certificate");
         Link certsLink = linkTo(methodOn(CertificateController.class)
-                .getCertificates(null, null)).withRel("all-certificates").expand();
+                .getCertificates(null, null, null, null)).withRel("all-certificates").expand();
         return Arrays.asList(selfLink, updateLink, deleteLink, certsLink);
     }
 

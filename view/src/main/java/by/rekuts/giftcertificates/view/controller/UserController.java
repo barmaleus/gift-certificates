@@ -38,8 +38,12 @@ public class UserController {
     }
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Resources<UserDto> getUsers() throws ServiceException{
-        List<UserDto> users = service.getList();
+    public Resources<UserDto> getUsers(
+            @RequestParam(value = "page", defaultValue = "1") String page,
+            @RequestParam(value = "item", defaultValue = "10") String item) throws ServiceException {
+        int pageInt = new ControllerHelper().checkParameter(page);
+        int itemInt = new ControllerHelper().checkParameter(item);
+        List<UserDto> users = service.getList(pageInt, itemInt);
 
         List<Link> links = getLinksForUsersList();
         for(UserDto user : users) {
@@ -103,7 +107,7 @@ public class UserController {
                 .updateUser(String.valueOf(dto.getUserId()), new UserDto(), null)).withRel("update-user");
         Link deleteLink = linkTo(methodOn(UserController.class).deleteUserById(String.valueOf(dto.getUserId()), null))
                 .withRel("delete-user");
-        Link usersLink = linkTo(methodOn(UserController.class).getUsers()).withRel("all-users");
+        Link usersLink = linkTo(methodOn(UserController.class).getUsers(null, null)).withRel("all-users");
         return Arrays.asList(selfLink, updateLink, deleteLink, usersLink);
     }
 

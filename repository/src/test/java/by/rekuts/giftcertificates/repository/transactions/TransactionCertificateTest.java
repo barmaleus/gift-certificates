@@ -39,7 +39,7 @@ public class TransactionCertificateTest {
     @BeforeTransaction
     void verifyInitialDatabaseState() {
         count = countRowsInTable(new Certificate());
-        certBeforeTransaction = repository.getList(new CertificateSpecification(71)).get(0);
+        certBeforeTransaction = repository.getList(new CertificateSpecification(71), null, null).get(0);
     }
 
     @Test
@@ -76,12 +76,12 @@ public class TransactionCertificateTest {
         certForUpdate.setExpirationDays(56);
 
         repository.update(certForUpdate);
-        Certificate certAfterUpdate = repository.getList(new CertificateSpecification(71)).get(0);
+        Certificate certAfterUpdate = repository.getList(new CertificateSpecification(71), null, null).get(0);
         assertNotEquals(certBeforeTransaction.getName(), certAfterUpdate.getName());
         assertNotEquals(certBeforeTransaction.getModificationDate(), certAfterUpdate.getModificationDate());
         assertNotEquals(certBeforeTransaction.getPrice(), certAfterUpdate.getPrice());
         TestTransaction.end();
-        Certificate certAfterTransaction = repository.getList(new CertificateSpecification(71)).get(0);
+        Certificate certAfterTransaction = repository.getList(new CertificateSpecification(71), null, null).get(0);
         assertEquals(certBeforeTransaction.getName(), certAfterTransaction.getName());
         assertEquals(certBeforeTransaction.getModificationDate(), certAfterTransaction.getModificationDate());
         assertEquals(certBeforeTransaction.getPrice(), certAfterTransaction.getPrice());
@@ -96,13 +96,13 @@ public class TransactionCertificateTest {
         certForUpdate.setExpirationDays(17);
 
         repository.update(certForUpdate);
-        Certificate certAfterUpdate = repository.getList(new CertificateSpecification(71)).get(0);
+        Certificate certAfterUpdate = repository.getList(new CertificateSpecification(71), null, null).get(0);
         assertNotEquals(certBeforeTransaction.getName(), certAfterUpdate.getName());
         assertNotEquals(certBeforeTransaction.getModificationDate(), certAfterUpdate.getModificationDate());
         assertNotEquals(certBeforeTransaction.getPrice(), certAfterUpdate.getPrice());
         TestTransaction.flagForCommit();
         TestTransaction.end();
-        Certificate certAfterTransaction = repository.getList(new CertificateSpecification(71)).get(0);
+        Certificate certAfterTransaction = repository.getList(new CertificateSpecification(71), null, null).get(0);
         assertNotEquals(certBeforeTransaction.getName(), certAfterTransaction.getName());
         assertNotEquals(certBeforeTransaction.getModificationDate(), certAfterTransaction.getModificationDate());
         assertNotEquals(certBeforeTransaction.getPrice(), certAfterTransaction.getPrice());

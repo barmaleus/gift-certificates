@@ -38,7 +38,7 @@ public class CertificateRepositoryTest {
 
     @Test
     public void getCertByIdTestTrue() {
-        List<Certificate> singletonList = repository.getList(new CertificateSpecification(1));
+        List<Certificate> singletonList = repository.getList(new CertificateSpecification(1), null, null);
         Certificate certificate = singletonList.get(0);
         Assert.assertEquals(1, singletonList.size());
         Assert.assertEquals("Certificate for 50% sale for dress", certificate.getName());
@@ -46,13 +46,13 @@ public class CertificateRepositoryTest {
 
     @Test
     public void getCertByIdTestFalse() {
-        List<Certificate> emptyList = repository.getList(new CertificateSpecification(2));
+        List<Certificate> emptyList = repository.getList(new CertificateSpecification(2), null, null);
         Assert.assertEquals(0, emptyList.size());
     }
 
     @Test
     public void getAllCertsTestTrue() {
-        List<Certificate> certificates = repository.getList(new CertificateSpecification());
+        List<Certificate> certificates = repository.getList(new CertificateSpecification(), null, null);
         Assert.assertEquals(2, certificates.size());
         Assert.assertEquals("Certificate for 50% sale for dress", certificates.get(0).getName());
         Assert.assertEquals(71, certificates.get(1).getId().intValue());
@@ -65,10 +65,20 @@ public class CertificateRepositoryTest {
             put("search", "dress");
         }};
 
-        List<Certificate> certificates = repository.getList(new CertificateSpecification(params, tagRepository));
+        List<Certificate> certificates = repository.getList(new CertificateSpecification(tagRepository, params), null, null);
         Assert.assertEquals(1, certificates.size());
         Assert.assertEquals("Certificate for 50% sale for dress", certificates.get(0).getName());
         Assert.assertEquals(1, certificates.get(0).getId().intValue());
+    }
+
+    @Test
+    public void getCertsByBadTagTest() {
+        Map<String, String> params = new HashMap<String, String>() {{
+            put("tag", "wedding-wedding");
+        }};
+
+        List<Certificate> certificates = repository.getList(new CertificateSpecification(tagRepository, params), null, null);
+        Assert.assertEquals(0, certificates.size());
     }
 
     @Test
@@ -76,8 +86,8 @@ public class CertificateRepositoryTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("search", "dress1");
         }};
-        CertificateSpecification specification = new CertificateSpecification(params, tagRepository);
-        List<Certificate> certificates = repository.getList(specification);
+        CertificateSpecification specification = new CertificateSpecification(tagRepository, params);
+        List<Certificate> certificates = repository.getList(specification, null, null);
         Assert.assertEquals(1, certificates.size());
         Assert.assertEquals("Certificate for 50% sale for dress1", certificates.get(0).getName());
         Assert.assertEquals(71, certificates.get(0).getId().intValue());
@@ -88,8 +98,8 @@ public class CertificateRepositoryTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("search", "dress");
         }};
-        CertificateSpecification specification = new CertificateSpecification(params, tagRepository);
-        List<Certificate> certificates = repository.getList(specification);
+        CertificateSpecification specification = new CertificateSpecification(tagRepository, params);
+        List<Certificate> certificates = repository.getList(specification, null, null);
         Assert.assertEquals(2, certificates.size());
     }
 
@@ -98,8 +108,8 @@ public class CertificateRepositoryTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("tag", "funny");
         }};
-        CertificateSpecification specification = new CertificateSpecification(params, tagRepository);
-        List<Certificate> certificates = repository.getList(specification);
+        CertificateSpecification specification = new CertificateSpecification(tagRepository, params);
+        List<Certificate> certificates = repository.getList(specification, null, null);
         Assert.assertEquals(0, certificates.size());
     }
 
@@ -128,27 +138,27 @@ public class CertificateRepositoryTest {
 
     @Test
     public void deleteCertWithNoDependenciesTestTrue() {
-        int originListSize = repository.getList(new CertificateSpecification()).size();
+        int originListSize = repository.getList(new CertificateSpecification(), null, null).size();
         repository.delete(71);
-        int changedListSize = repository.getList(new CertificateSpecification()).size();
+        int changedListSize = repository.getList(new CertificateSpecification(), null, null).size();
         Assert.assertEquals(1, originListSize - changedListSize);
     }
 
     @Test
     public void cascadeDeleteCertTestTrue() {
-        int originListSize = repository.getList(new CertificateSpecification()).size();
+        int originListSize = repository.getList(new CertificateSpecification(), null, null).size();
         repository.delete(1);
-        int changedListSize = repository.getList(new CertificateSpecification()).size();
+        int changedListSize = repository.getList(new CertificateSpecification(), null, null).size();
         Assert.assertEquals(1, originListSize - changedListSize);
     }
 
     @Test
     public void updateCertTestTrue() {
-        Certificate certificate = repository.getList(new CertificateSpecification(1)).get(0);
+        Certificate certificate = repository.getList(new CertificateSpecification(1), null, null).get(0);
         String oldName = certificate.getName();
         certificate.setName("New name");
         repository.update(certificate);
-        Certificate modifiedCertificate = repository.getList(new CertificateSpecification(1)).get(0);
+        Certificate modifiedCertificate = repository.getList(new CertificateSpecification(1), null, null).get(0);
         Assert.assertNotNull(modifiedCertificate.getModificationDate());
         Assert.assertNotEquals(oldName, modifiedCertificate.getName());
         Assert.assertEquals("New name", modifiedCertificate.getName());
@@ -156,7 +166,7 @@ public class CertificateRepositoryTest {
 
     @Test(expected = PersistenceException.class)
     public void updateCertTestFalse() {
-        Certificate certificate = repository.getList(new CertificateSpecification(1)).get(0);
+        Certificate certificate = repository.getList(new CertificateSpecification(1), null, null).get(0);
         certificate.setName(null);
         repository.update(certificate);
     }

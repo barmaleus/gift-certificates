@@ -35,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void update(User user) {
         if(user.getRole() == null || user.getRole() == User.UserRole.ADMIN) {
-            User tempUser = getList(new UserSpecification(user.getId())).get(0);
+            User tempUser = getList(new UserSpecification(user.getId()), null, null).get(0);
             user.setRole(tempUser.getRole());
         }
         User dbUser = entityManager.find(User.class, user.getId());
@@ -51,7 +51,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getList(Specification specification) {
+    public List<User> getList(Specification specification, Integer page, Integer itemsPerPage) {
         UserSpecification userSpecification = (UserSpecification) specification;
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
@@ -59,6 +59,6 @@ public class UserRepositoryImpl implements UserRepository {
         List<Predicate> predicates;
         predicates = userSpecification.getPredicates(root, builder);
 
-        return new EntitiesExtractor<User>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery);
+        return new EntitiesExtractor<User>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery, page, itemsPerPage);
     }
 }

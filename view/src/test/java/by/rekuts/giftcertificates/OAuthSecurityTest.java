@@ -89,6 +89,4 @@ public class OAuthSecurityTest {
     }
 
     //todo more tests
-
-    //todo test spring transactions
 }

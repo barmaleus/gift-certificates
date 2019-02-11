@@ -32,7 +32,7 @@ public class User implements Serializable {
 
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(
-			name = "gift_certificate",
+			name = "user_certificate",
 			joinColumns = { @JoinColumn(name = "user_id") },
 			inverseJoinColumns = { @JoinColumn(name = "certificate_id") }
 	)
@@ -82,6 +82,14 @@ public class User implements Serializable {
 
 	public void setRole(UserRole role) {
 		this.role = role;
+	}
+
+	public List<Certificate> getCertificates() {
+		return certificates;
+	}
+
+	public void setCertificates(List<Certificate> certificates) {
+		this.certificates = certificates;
 	}
 
 	@Override

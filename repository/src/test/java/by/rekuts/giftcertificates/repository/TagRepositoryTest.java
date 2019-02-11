@@ -34,16 +34,32 @@ public class TagRepositoryTest {
 
     @Test
     public void getTagByNameTestTrue() {
-        Tag tag = repository.getList(new TagSpecification("funny")).get(0);
+        Tag tag = repository.getList(new TagSpecification("funny"), null, null).get(0);
         Assert.assertEquals("funny", tag.getName());
         Assert.assertEquals(0, tag.getId());
     }
 
     @Test
     public void getAllTagsTestTrue() {
-        List<Tag> tags = repository.getList(new TagSpecification());
+        List<Tag> tags = repository.getList(new TagSpecification(), null, null);
         Assert.assertEquals(5, tags.size());
         Assert.assertEquals("funny", tags.get(0).getName());
         Assert.assertEquals("wedding", tags.get(1).getName());
+    }
+
+    @Test
+    public void getAllTagsAndUsePagingTestTrue() {
+        List<Tag> tags = repository.getList(new TagSpecification(), 0, 3);
+        Assert.assertEquals(3, tags.size());
+        Assert.assertEquals("funny", tags.get(0).getName());
+        Assert.assertEquals("wedding", tags.get(1).getName());
+    }
+
+    @Test
+    public void getAllTagsAndUsePagingTestTrue1() {
+        List<Tag> tags = repository.getList(new TagSpecification(), 1, 3);
+        Assert.assertEquals(2, tags.size());
+        Assert.assertEquals("tratatag", tags.get(0).getName());
+        Assert.assertEquals("tratata", tags.get(1).getName());
     }
 }

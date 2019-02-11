@@ -19,7 +19,7 @@ public class  CertificateRepositoryImpl implements CertificateRepository {
     private static final String BASE_CERTIFICATE_PATH = "/certificates";
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     public String create(Certificate certificate) {
@@ -48,7 +48,7 @@ public class  CertificateRepositoryImpl implements CertificateRepository {
     }
 
     @Override
-    public List<Certificate> getList(Specification specification) {
+    public List<Certificate> getList(Specification specification, Integer page, Integer itemsPerPage) {
 
         final CertificateSpecification certificateSpecification = (CertificateSpecification) specification;
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -57,6 +57,6 @@ public class  CertificateRepositoryImpl implements CertificateRepository {
         List<Predicate> predicates;
         predicates = certificateSpecification.getPredicates(certificateRoot, builder);
 
-        return new EntitiesExtractor<Certificate>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery);
+        return new EntitiesExtractor<Certificate>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery, page, itemsPerPage);
     }
 }

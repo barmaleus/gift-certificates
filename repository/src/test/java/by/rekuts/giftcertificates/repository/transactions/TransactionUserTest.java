@@ -39,7 +39,7 @@ public class TransactionUserTest {
     @BeforeTransaction
     void verifyInitialDatabaseState() {
         count = countRowsInTable(new User());
-        userBeforeTransaction = repository.getList(new UserSpecification(2)).get(0);
+        userBeforeTransaction = repository.getList(new UserSpecification(2), null, null).get(0);
     }
 
     @Test
@@ -75,10 +75,10 @@ public class TransactionUserTest {
         userForUpdate.setPassword(userForUpdate.getLogin());
 
         repository.update(userForUpdate);
-        User userAfterUpdate = repository.getList(new UserSpecification(2)).get(0);
+        User userAfterUpdate = repository.getList(new UserSpecification(2), null, null).get(0);
         assertNotEquals(userBeforeTransaction.getLogin(), userAfterUpdate.getLogin());
         TestTransaction.end();
-        User userAfterTransaction = repository.getList(new UserSpecification(2)).get(0);
+        User userAfterTransaction = repository.getList(new UserSpecification(2), null, null).get(0);
         assertEquals(userBeforeTransaction.getLogin(), userAfterTransaction.getLogin());
     }
 
@@ -90,11 +90,11 @@ public class TransactionUserTest {
         userForUpdate.setPassword(userForUpdate.getLogin());
 
         repository.update(userForUpdate);
-        User userAfterUpdate = repository.getList(new UserSpecification(2)).get(0);
+        User userAfterUpdate = repository.getList(new UserSpecification(2), null, null).get(0);
         assertNotEquals(userBeforeTransaction.getLogin(), userAfterUpdate.getLogin());
         TestTransaction.flagForCommit();
         TestTransaction.end();
-        User userAfterTransaction = repository.getList(new UserSpecification(2)).get(0);
+        User userAfterTransaction = repository.getList(new UserSpecification(2), null, null).get(0);
         assertNotEquals(userBeforeTransaction.getLogin(), userAfterTransaction.getLogin());
     }
 

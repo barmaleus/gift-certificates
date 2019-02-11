@@ -27,5 +27,5 @@ public interface CrudService<T> {
     /**
      * @return list of all t-objects from database
      */
-    List<T> getList();
+    List<T> getList(Integer page, Integer itemsPerPage);
 }

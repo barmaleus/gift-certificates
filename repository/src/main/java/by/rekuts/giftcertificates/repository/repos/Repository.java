@@ -27,7 +27,10 @@ public interface Repository<T> {
     void delete(int id);
 
     /**
+     * @param specification - list of predicates for criteria builder
+     * @param page - number of page, begins from 0
+     * @param itemsPerPage - number of items on one page
      * @return list of all t-objects from database by any criteria, mentioned in specification
      */
-    List<T> getList(Specification specification);
+    List<T> getList(Specification specification, Integer page, Integer itemsPerPage);
 }

@@ -57,7 +57,7 @@ public class TransactionTagTest {
 
     @Test
     public void deleteTagRollback() {
-        List<Tag> tags = repository.getList(new TagSpecification());
+        List<Tag> tags = repository.getList(new TagSpecification(), null, null);
         repository.delete(tags.get(tags.size()-1).getId());
         assertNumTags(count - 1);
         TestTransaction.isFlaggedForRollback();
@@ -77,7 +77,7 @@ public class TransactionTagTest {
 
     @Test
     public void deleteTagCommit() {
-        List<Tag> tags = repository.getList(new TagSpecification());
+        List<Tag> tags = repository.getList(new TagSpecification(), null, null);
         repository.delete(tags.get(tags.size()-1).getId());
 
         TestTransaction.flagForCommit();
@@ -88,7 +88,7 @@ public class TransactionTagTest {
 
     @Test
     public void deleteTagRollback1() {
-        List<Tag> tags = repository.getList(new TagSpecification());
+        List<Tag> tags = repository.getList(new TagSpecification(), null, null);
         repository.delete(tags.get(tags.size()-1).getId());
 
         TestTransaction.flagForRollback();

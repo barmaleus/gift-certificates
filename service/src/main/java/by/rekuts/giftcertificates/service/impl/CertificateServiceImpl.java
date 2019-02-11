@@ -55,18 +55,18 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<CertificateDto> getList() {
+    public List<CertificateDto> getList(Integer page, Integer itemsPerPage) {
         return repository
-                .getList(new CertificateSpecification())
+                .getList(new CertificateSpecification(), page, itemsPerPage)
                 .stream()
                 .map(converter::domainConvert)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<CertificateDto> getList(Map<String, String> params) {
+    public List<CertificateDto> getList(Map<String, String> params, Integer page, Integer itemsPerPage) {
         return repository
-                .getList(new CertificateSpecification(params, tagRepository))
+                .getList(new CertificateSpecification(tagRepository, params), page, itemsPerPage)
                 .stream()
                 .map(converter::domainConvert)
                 .collect(Collectors.toList());
@@ -75,7 +75,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public CertificateDto getCertById(int id) {
         return repository
-                .getList(new CertificateSpecification(id))
+                .getList(new CertificateSpecification(id), null, null)
                 .stream()
                 .map(converter::domainConvert)
                 .findFirst()

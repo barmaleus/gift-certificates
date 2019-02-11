@@ -19,7 +19,7 @@ public class TagRepositoryImpl implements TagRepository {
     private static final String BASE_TAG_PATH = "/tags";
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     public String create(Tag tag) {
@@ -40,7 +40,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
-    public List<Tag> getList(Specification specification) {
+    public List<Tag> getList(Specification specification, Integer page, Integer itemsPerPage) {
 
         final TagSpecification tagSpecification = (TagSpecification) specification;
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -49,6 +49,6 @@ public class TagRepositoryImpl implements TagRepository {
         List<Predicate> predicates;
         predicates = tagSpecification.getPredicates(certificateRoot, builder);
 
-        return new EntitiesExtractor<Tag>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery);
+        return new EntitiesExtractor<Tag>().getListUsingCriteriaBuilder(entityManager, predicates, criteriaQuery, page, itemsPerPage);
     }
 }

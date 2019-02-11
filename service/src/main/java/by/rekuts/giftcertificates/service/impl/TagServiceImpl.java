@@ -43,9 +43,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> getList() {
+    public List<TagDto> getList(Integer page, Integer itemsPerPage) {
         return repository
-                .getList(new TagSpecification())
+                .getList(new TagSpecification(), page, itemsPerPage)
                 .stream()
                 .map(converter::domainConvert)
                 .collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagDto getTagByName(String tagName) {
         return repository
-                .getList(new TagSpecification(tagName))
+                .getList(new TagSpecification(tagName), null, null)
                 .stream()
                 .map(converter::domainConvert)
                 .findFirst()

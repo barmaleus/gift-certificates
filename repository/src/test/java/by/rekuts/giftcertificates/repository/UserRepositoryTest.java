@@ -8,8 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -61,9 +59,9 @@ public class UserRepositoryTest {
 
     @Test
     public void deleteUserTest() {
-        int beforeUsersAmount = repository.getList(new UserSpecification()).size();
+        int beforeUsersAmount = repository.getList(new UserSpecification(), null, null).size();
         repository.delete(2);
-        int afterUsersAmount = repository.getList(new UserSpecification()).size();
+        int afterUsersAmount = repository.getList(new UserSpecification(), null, null).size();
         Assert.assertEquals(1, beforeUsersAmount - afterUsersAmount);
     }
 }

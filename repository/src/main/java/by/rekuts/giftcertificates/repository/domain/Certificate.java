@@ -111,6 +111,14 @@ public class Certificate implements Serializable {
         this.tags = tags;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     @Override
     public String toString() {
         return "Certificate{" +
