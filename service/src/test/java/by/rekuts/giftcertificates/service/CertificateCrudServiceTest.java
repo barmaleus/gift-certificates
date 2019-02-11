@@ -82,11 +82,10 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getAllCertsTestTrue() {
-        when(repository.getList(any(CertificateSpecification.class), null, null))
+        when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(
-                        certDtos
-                                .stream()
-                                .map(el -> converter.dtoConvert(el))
+                        certDtos.stream()
+                                .map(converter::dtoConvert)
                                 .collect(Collectors.toList())
                 );
         List<CertificateDto> certs = service.getList(null, null);
@@ -100,7 +99,7 @@ public class CertificateCrudServiceTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("search", "Certificate 1");
         }};
-        when(repository.getList(any(CertificateSpecification.class), null, null))
+        when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(
                     Collections.singletonList(certDtos.get(0))
                             .stream()
@@ -117,7 +116,7 @@ public class CertificateCrudServiceTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("search", "Certificate");
         }};
-        when(repository.getList(any(CertificateSpecification.class), null, null))
+        when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(
                         certDtos
                                 .stream()
@@ -135,7 +134,7 @@ public class CertificateCrudServiceTest {
         Map<String, String> params = new HashMap<String, String>() {{
             put("search", "Certificate №1");
         }};
-        when(repository.getList(any(CertificateSpecification.class), null, null))
+        when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(Collections.emptyList());
         List<CertificateDto> certs = service.getList(params, null, null);
         Assert.assertEquals(0, certs.size());
@@ -143,7 +142,7 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getCertByIdTestTrue() {
-        when(repository.getList(any(CertificateSpecification.class), null, null))
+        when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(Collections.singletonList(converter.dtoConvert(certDtos.get(1))));
         CertificateDto cert = service.getCertById(8);
         Assert.assertEquals(8, cert.getCertificateId());
@@ -151,7 +150,7 @@ public class CertificateCrudServiceTest {
 
     @Test
     public void getCertByIdTestFalse() {
-        when(repository.getList(any(CertificateSpecification.class), null, null))
+        when(repository.getList(any(CertificateSpecification.class), eq(null), eq(null)))
                 .thenReturn(new ArrayList<>());
         CertificateDto cert = service.getCertById(9);
         Assert.assertNull(cert);

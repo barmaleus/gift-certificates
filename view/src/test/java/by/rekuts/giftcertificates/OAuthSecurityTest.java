@@ -35,7 +35,8 @@ public class OAuthSecurityTest {
 
     @Before
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.wac)
                 .apply(springSecurity())
                 .build();
     }

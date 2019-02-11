@@ -62,11 +62,10 @@ public class TagCrudServiceTest {
 
     @Test
     public void getAllTagsTestTrue() {
-        when(repository.getList(any(TagSpecification.class), null, null))
+        when(repository.getList(any(TagSpecification.class), eq(null), eq(null)))
                 .thenReturn(
-                        tagDtos
-                                .stream()
-                                .map(el -> converter.dtoConvert(el))
+                        tagDtos.stream()
+                                .map(converter::dtoConvert)
                                 .collect(Collectors.toList())
                 );
         List<TagDto> tagDtos = service.getList(null, null);
@@ -76,7 +75,7 @@ public class TagCrudServiceTest {
 
     @Test
     public void getTagsByNameTestTrue() {
-        when(repository.getList(any(TagSpecification.class), null, null))
+        when(repository.getList(any(TagSpecification.class), eq(null), eq(null)))
                 .thenReturn(Collections.singletonList(converter.dtoConvert(tagDtos.get(0))));
         TagDto tagDto = service.getTagByName("funny");
         Assert.assertEquals("funny", tagDto.getName());
