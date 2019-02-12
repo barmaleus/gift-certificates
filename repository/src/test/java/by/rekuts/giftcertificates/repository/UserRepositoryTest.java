@@ -31,7 +31,7 @@ public class UserRepositoryTest {
         user.setLogin("userok");
         user.setPassword("userokpass");
         repository.create(user);
-        Assert.assertEquals("User{id=7, login='userok', password='userokpass', role=USER}", user.toString());
+        Assert.assertEquals("User{id=7, login='userok', password='userokpass', role=USER, certificates=null}", user.toString());
     }
 
     @Test (expected = PersistenceException.class)
@@ -54,7 +54,7 @@ public class UserRepositoryTest {
         User user = new User(1, "userok1", "userokpass");
         repository.update(user);
         System.out.println(user.toString());
-        Assert.assertEquals("User{id=1, login='userok1', password='userokpass', role=USER}", user.toString());
+        Assert.assertEquals("User{id=1, login='userok1', password='userokpass', role=USER, certificates=null}", user.toString());
     }
 
     @Test

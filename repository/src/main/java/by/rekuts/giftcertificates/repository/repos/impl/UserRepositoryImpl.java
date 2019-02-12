@@ -42,6 +42,7 @@ public class UserRepositoryImpl implements UserRepository {
         dbUser.setLogin(user.getLogin());
         dbUser.setPassword(user.getPassword());
         dbUser.setRole(user.getRole());
+        dbUser.setCertificates(user.getCertificates());
         entityManager.merge(dbUser);
     }
 

@@ -1,7 +1,10 @@
 package by.rekuts.giftcertificates.service.impl;
 
+import by.rekuts.giftcertificates.repository.domain.Certificate;
 import by.rekuts.giftcertificates.repository.domain.User;
+import by.rekuts.giftcertificates.repository.repos.CertificateRepository;
 import by.rekuts.giftcertificates.repository.repos.UserRepository;
+import by.rekuts.giftcertificates.repository.specs.CertificateSpecification;
 import by.rekuts.giftcertificates.repository.specs.UserSpecification;
 import by.rekuts.giftcertificates.service.ServiceException;
 import by.rekuts.giftcertificates.service.UserService;
@@ -25,12 +28,14 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
+    private final CertificateRepository certificateRepository;
     private final UserConverter converter;
     private final PasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, UserConverter converter, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository repository, CertificateRepository certificateRepository, UserConverter converter, PasswordEncoder encoder) {
         this.repository = repository;
+        this.certificateRepository = certificateRepository;
         this.encoder = encoder;
         this.converter = converter;
     }
@@ -45,10 +50,10 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken authenticationToken
                 = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         authenticationToken.getAuthorities();
-        System.out.println("blabla|| " + authenticationToken.getAuthorities()); //todo do
-        System.out.println(authenticationToken);
-        if (user.getRole().name().equals("ADMIN")) {
-        }
+//        System.out.println("blabla|| " + authenticationToken.getAuthorities()); //todo do
+//        System.out.println(authenticationToken);
+//        if (user.getRole().name().equals("ADMIN")) {
+//        }
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(),
                 user.getPassword(),
@@ -78,6 +83,28 @@ public class UserServiceImpl implements UserService {
             repository.update(converter.dtoConvert(userDto));
         } else {
             throw new ServiceException("Can't update user. Login, password is expected.");
+        }
+    }
+
+    @Transactional
+    @Override
+    public boolean buyCertificate(String username, int certId) throws ServiceException {
+        User user = repository.getList(new UserSpecification(username), null, null)
+                .stream()
+                .findFirst().orElseThrow(() -> new ServiceException("Sorry, you can't buy certificate now. "));
+        Certificate certificate = certificateRepository
+                .getList(new CertificateSpecification(certId), null, null)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new ServiceException("Sorry, you can't buy certificate now. "));
+        List<Certificate> certificates = user.getCertificates();
+        if (certificates.contains(certificate)) {
+            return false;
+        } else {
+            certificates.add(certificate);
+            user.setCertificates(certificates);
+            repository.update(user);
+            return true;
         }
     }
 

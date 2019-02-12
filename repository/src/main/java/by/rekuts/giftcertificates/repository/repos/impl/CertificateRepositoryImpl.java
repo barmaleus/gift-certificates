@@ -38,6 +38,7 @@ public class  CertificateRepositoryImpl implements CertificateRepository {
         dbCertificate.setDescription(certificate.getDescription());
         dbCertificate.setPrice(certificate.getPrice());
         dbCertificate.setExpirationDays(certificate.getExpirationDays());
+        dbCertificate.setUsers(certificate.getUsers());
         entityManager.merge(dbCertificate);
         entityManager.flush();
     }

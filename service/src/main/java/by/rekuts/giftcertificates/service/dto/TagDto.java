@@ -1,7 +1,9 @@
 package by.rekuts.giftcertificates.service.dto;
 
 import org.springframework.hateoas.ResourceSupport;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TagDto extends ResourceSupport {
     private int tagId;
     private String name;

@@ -2,6 +2,7 @@ package by.rekuts.giftcertificates.view.controller;
 
 import by.rekuts.giftcertificates.service.CertificateService;
 import by.rekuts.giftcertificates.service.ServiceException;
+import by.rekuts.giftcertificates.service.UserService;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -25,10 +27,12 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RestController
 public class CertificateController {
     private final CertificateService service;
+    private final UserService userService;
 
     @Autowired
-    public CertificateController(CertificateService service) {
+    public CertificateController(CertificateService service, UserService userService) {
         this.service = service;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -119,6 +123,30 @@ public class CertificateController {
         List<Link> links = getLinksForSingleCertificate(patchedCertificate);
 
         return new ResponseEntity<>(new Resource<>(patchedCertificate, links), headers, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource> buyCertificate(
+            @PathVariable("certId") String certId, String csrfToken) throws ServiceException {
+        int id = Integer.parseInt(certId);
+        String selfUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean certIsNotBoughtYet = userService.buyCertificate(selfUsername, id);
+        if (certIsNotBoughtYet) {
+            HttpHeaders headers = new ControllerHelper().addHeadersToSimpleResponse(csrfToken);
+
+            CertificateDto purchasedCertificate = service.getCertById(id);
+            List<Link> links = getLinksForSingleCertificate(purchasedCertificate);
+
+            return new ResponseEntity<>(new Resource<>(purchasedCertificate, links), headers, HttpStatus.OK);
+        } else {
+            HttpHeaders headers = new ControllerHelper().addHeadersToSimpleResponse(csrfToken);
+
+            CertificateDto purchasedCertificate = service.getCertById(id);
+            List<Link> links = getLinksForSingleCertificate(purchasedCertificate);
+
+            return new ResponseEntity<>(new Resource<>(purchasedCertificate, links), headers, HttpStatus.FOUND);
+        }
+
     }
 
     @DeleteMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)

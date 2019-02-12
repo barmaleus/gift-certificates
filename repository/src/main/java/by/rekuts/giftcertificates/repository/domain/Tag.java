@@ -51,6 +51,7 @@ public class Tag implements Serializable {
         return "Tag{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", certificates=" + certificates +
                 '}';
     }
 }

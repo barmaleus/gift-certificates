@@ -129,6 +129,8 @@ public class Certificate implements Serializable {
                 ", creationDate=" + creationDate +
                 ", modificationDate=" + modificationDate +
                 ", expirationDays=" + expirationDays +
+                ", tags=" + tags +
+                ", users=" + users +
                 '}';
     }
 }

@@ -10,3 +10,4 @@ INSERT INTO public.gift_user (id, login, password, role) VALUES (2, 'user2', 'us
 INSERT INTO public.tag_certificate (tag_id, certificate_id) VALUES (1, 1);
 INSERT INTO public.tag_certificate (tag_id, certificate_id) VALUES (8, 71);
 INSERT INTO public.tag_certificate (tag_id, certificate_id) VALUES (19, 71);
+INSERT INTO public.user_certificate (user_id, certificate_id) VALUES (1, 1);

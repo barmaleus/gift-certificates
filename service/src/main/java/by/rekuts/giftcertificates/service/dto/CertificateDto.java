@@ -4,6 +4,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CertificateDto extends ResourceSupport {
     private int certificateId;
@@ -13,6 +14,7 @@ public class CertificateDto extends ResourceSupport {
     private LocalDateTime creationDate;
     private LocalDateTime modificationDate;
     private int expirationDays;
+    private List<Integer> users;
 
     public int getCertificateId() {
         return certificateId;
@@ -70,9 +72,17 @@ public class CertificateDto extends ResourceSupport {
         this.expirationDays = expirationDays;
     }
 
+    public List<Integer> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<Integer> users) {
+        this.users = users;
+    }
+
     @Override
     public String toString() {
-        return "Certificate{" +
+        return "CertificateDto{" +
                 "certificateId=" + certificateId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
@@ -80,6 +90,7 @@ public class CertificateDto extends ResourceSupport {
                 ", creationDate=" + creationDate +
                 ", modificationDate=" + modificationDate +
                 ", expirationDays=" + expirationDays +
+                ", users=" + users +
                 '}';
     }
 }

@@ -3,6 +3,7 @@ package by.rekuts.giftcertificates.service.impl;
 import by.rekuts.giftcertificates.repository.domain.Certificate;
 import by.rekuts.giftcertificates.repository.repos.CertificateRepository;
 import by.rekuts.giftcertificates.repository.repos.TagRepository;
+import by.rekuts.giftcertificates.repository.repos.UserRepository;
 import by.rekuts.giftcertificates.repository.specs.CertificateSpecification;
 import by.rekuts.giftcertificates.service.CertificateService;
 import by.rekuts.giftcertificates.service.ServiceException;

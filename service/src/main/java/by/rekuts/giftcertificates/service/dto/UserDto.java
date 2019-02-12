@@ -2,10 +2,13 @@ package by.rekuts.giftcertificates.service.dto;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import java.util.List;
+
 public class UserDto extends ResourceSupport {
     private int userId;
     private String login;
     private String password;
+    private List<Integer> certificates;
 
     public UserDto() {}
 
@@ -39,12 +42,21 @@ public class UserDto extends ResourceSupport {
         this.password = password;
     }
 
+    public List<Integer> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<Integer> certificates) {
+        this.certificates = certificates;
+    }
+
     @Override
     public String toString() {
         return "UserDto{" +
                 "userId=" + userId +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
+                ", certificates=" + certificates +
                 '}';
     }
 }

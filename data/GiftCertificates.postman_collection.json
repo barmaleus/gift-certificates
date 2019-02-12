@@ -665,6 +665,69 @@
 					"response": []
 				},
 				{
+					"name": "Buy certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8a7f6ba3-1601-44f5-9221-42ec62f35290",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200 || 302;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"Take This Job and Shove It\");",
+									"    pm.expect(jsonData.price).to.eql(169.17);",
+									"    pm.expect(jsonData.expirationDays).to.eql(25);",
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/certificates/3",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"certificates",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete certificate",
 					"event": [
 						{
