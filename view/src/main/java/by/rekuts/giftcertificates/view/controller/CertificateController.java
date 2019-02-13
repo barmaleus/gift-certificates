@@ -16,13 +16,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static by.rekuts.giftcertificates.view.controller.HateoasLinksKeeper.*;
 
 @RestController
 public class CertificateController {
@@ -36,9 +34,8 @@ public class CertificateController {
     }
 
     @GetMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getCertificateById(@PathVariable("certId") String certId) throws ServiceException {
-        int id = Integer.parseInt(certId);
-        CertificateDto certificateDto = service.getCertById(id);
+    public ResponseEntity getCertificateById(@PathVariable("certId") int certId) throws ServiceException {
+        CertificateDto certificateDto = service.getCertById(certId);
 
         List<Link> links = getLinksForSingleCertificate(certificateDto);
 
@@ -49,8 +46,8 @@ public class CertificateController {
     public Resources<CertificateDto> getCertificates (
             @RequestParam(value = "tag", required = false) String[] tag,
             @RequestParam(value = "search", required = false) String search,
-            @RequestParam(value = "page", defaultValue = "1") String page,
-            @RequestParam(value = "item", defaultValue = "10") String item) throws ServiceException{
+            @RequestParam(value = "page", defaultValue = ControllerHelper.PAGE_DEFAULT_VALUE) String page,
+            @RequestParam(value = "item", defaultValue = ControllerHelper.ITEM_DEFAULT_VALUE) String item) throws ServiceException{
 
         Map<String, String[]> params = new HashMap<>();
         if(tag != null) { params.put("tag", tag); }
@@ -154,28 +151,5 @@ public class CertificateController {
         return new ControllerHelper().deleteEntityById(service, certId, csrfToken);
     }
 
-    private List<Link> getLinksForCertificatesList() throws ServiceException {
-        Link selfLink = linkTo(CertificateController.class).slash("certificates").withSelfRel();
-        Link createLink = linkTo(methodOn(CertificateController.class)
-                .createCertificate(new CertificateDto(), null)).withRel("create-certificate");
-        Link tagsLink = linkTo(TagController.class).slash("tags").withRel("all-tags");
-        return Arrays.asList(selfLink, createLink, tagsLink);
-    }
 
-    private List<Link> getLinksForSingleCertificate(CertificateDto dto) throws ServiceException {
-        Link selfLink = linkTo(CertificateController.class).slash("certificates/" + dto.getCertificateId()).withSelfRel();
-        Link updateLink = linkTo(methodOn(CertificateController.class)
-                .updateCertificate(String.valueOf(dto.getCertificateId()), new CertificateDto(), null)).withRel("update-certificate");
-        Link deleteLink = linkTo(methodOn(CertificateController.class)
-                .deleteCertificateById(String.valueOf(dto.getCertificateId()), null)).withRel("delete-certificate");
-        Link certsLink = linkTo(methodOn(CertificateController.class)
-                .getCertificates(null, null, null, null)).withRel("all-certificates").expand();
-        return Arrays.asList(selfLink, updateLink, deleteLink, certsLink);
-    }
-
-    private Link linkToSingleCertificate(CertificateDto certificate) throws ServiceException {
-        return linkTo(methodOn(CertificateController.class)
-                .getCertificateById(String.valueOf(certificate.getCertificateId())))
-                .withRel("cert-" + certificate.getCertificateId());
-    }
 }

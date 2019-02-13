@@ -1,7 +1,9 @@
 package by.rekuts.giftcertificates.view.controller;
 
+import by.rekuts.giftcertificates.service.CertificateService;
 import by.rekuts.giftcertificates.service.ServiceException;
 import by.rekuts.giftcertificates.service.UserService;
+import by.rekuts.giftcertificates.service.dto.CertificateDto;
 import by.rekuts.giftcertificates.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -13,24 +15,26 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static by.rekuts.giftcertificates.view.controller.HateoasLinksKeeper.*;
 
 @RestController
 public class UserController {
     private final UserService service;
+    private final CertificateService certificateService;
 
     @Autowired
-    public UserController(UserService service) {
+    public UserController(UserService service, CertificateService certificateService) {
         this.service = service;
+        this.certificateService = certificateService;
     }
 
     @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getUser(@PathVariable("id") String id) throws ServiceException {
-        UserDto userDto = service.getUserById(Integer.parseInt(id));
+    public ResponseEntity getUser(@PathVariable("id") int id) throws ServiceException {
+        UserDto userDto = service.getUserById(id);
 
         List<Link> links = getLinksForSingleUser(userDto);
 
@@ -39,8 +43,8 @@ public class UserController {
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public Resources<UserDto> getUsers(
-            @RequestParam(value = "page", defaultValue = "1") String page,
-            @RequestParam(value = "item", defaultValue = "10") String item) throws ServiceException {
+            @RequestParam(value = "page", defaultValue = ControllerHelper.PAGE_DEFAULT_VALUE) String page,
+            @RequestParam(value = "item", defaultValue = ControllerHelper.ITEM_DEFAULT_VALUE) String item) throws ServiceException {
         int pageInt = new ControllerHelper().checkParameter(page);
         int itemInt = new ControllerHelper().checkParameter(item);
         List<UserDto> users = service.getList(pageInt, itemInt);
@@ -50,6 +54,31 @@ public class UserController {
             user.add(linkToSingleUser(user));
         }
         return new Resources<>(users, links);
+    }
+
+    @GetMapping(value = "/users/{userId}/certificate", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Resources<CertificateDto> getUsersCertificates(
+            @PathVariable("userId") int id,
+            @RequestParam(value = "tag", required = false) String[] tag,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = ControllerHelper.PAGE_DEFAULT_VALUE) String page,
+            @RequestParam(value = "item", defaultValue = ControllerHelper.ITEM_DEFAULT_VALUE) String item) throws ServiceException {
+        UserDto userDto = service.getUserById(id);
+
+        Map<String, String[]> params = new HashMap<>();
+        if(tag != null) { params.put("tag", tag); }
+        if(search != null) { params.put("search", new String[]{search}); }
+        params.put("userId", new String[]{String.valueOf(id)});
+        int pageInt = new ControllerHelper().checkParameter(page);
+        int itemInt = new ControllerHelper().checkParameter(item);
+
+        List<Link> links = getLinksForSingleUser(userDto);
+
+        List<CertificateDto> certificates = certificateService.getList(params, pageInt, itemInt);
+        for(CertificateDto certificate : certificates) {
+            certificate.add(linkToSingleCertificate(certificate));
+        }
+        return new Resources<>(certificates, links);
     }
 
     /**
@@ -91,29 +120,5 @@ public class UserController {
     @DeleteMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity deleteUserById(@PathVariable("id") String userId, String csrfToken) {
         return new ControllerHelper().deleteEntityById(service, userId, csrfToken);
-    }
-
-    private List<Link> getLinksForUsersList() throws ServiceException {
-        Link selfLink = linkTo(UserController.class).slash("users").withSelfRel();
-        Link createLink = linkTo(methodOn(UserController.class).createUser(new UserDto(), null)).withRel("create-user");
-        Link tagsLink = linkTo(TagController.class).slash("tags").withRel("all-tags").expand();
-        Link certsLink = linkTo(CertificateController.class).slash("certificates").withRel("all-certs").expand();
-        return Arrays.asList(selfLink, createLink, tagsLink, certsLink);
-    }
-
-    private List<Link> getLinksForSingleUser(UserDto dto) throws ServiceException {
-        Link selfLink = linkTo(UserController.class).slash("users/" + dto.getUserId()).withSelfRel();
-        Link updateLink = linkTo(methodOn(UserController.class)
-                .updateUser(String.valueOf(dto.getUserId()), new UserDto(), null)).withRel("update-user");
-        Link deleteLink = linkTo(methodOn(UserController.class).deleteUserById(String.valueOf(dto.getUserId()), null))
-                .withRel("delete-user");
-        Link usersLink = linkTo(methodOn(UserController.class).getUsers(null, null)).withRel("all-users");
-        return Arrays.asList(selfLink, updateLink, deleteLink, usersLink);
-    }
-
-    private Link linkToSingleUser(UserDto user) throws ServiceException{
-        return linkTo(methodOn(UserController.class)
-                .getUser(String.valueOf(user.getUserId())))
-                .withRel("tag-" + user.getUserId());
     }
 }

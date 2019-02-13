@@ -13,11 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
+import static by.rekuts.giftcertificates.view.controller.HateoasLinksKeeper.getLinksForSingleTag;
+import static by.rekuts.giftcertificates.view.controller.HateoasLinksKeeper.getLinksForTagsList;
+import static by.rekuts.giftcertificates.view.controller.HateoasLinksKeeper.linkToSingleTag;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class TagController {
@@ -39,8 +40,8 @@ public class TagController {
 
     @GetMapping(value = "/tags", produces = MediaType.APPLICATION_JSON_VALUE)
     public Resources<TagDto> getTags(
-            @RequestParam(value = "page", defaultValue = "1") String page,
-            @RequestParam(value = "item", defaultValue = "10") String item) throws ServiceException {
+            @RequestParam(value = "page", defaultValue = ControllerHelper.PAGE_DEFAULT_VALUE) String page,
+            @RequestParam(value = "item", defaultValue = ControllerHelper.ITEM_DEFAULT_VALUE) String item) throws ServiceException {
         int pageInt = new ControllerHelper().checkParameter(page);
         int itemInt = new ControllerHelper().checkParameter(item);
         List<TagDto> tags = service.getList(pageInt, itemInt);
@@ -94,26 +95,5 @@ public class TagController {
         } else {
             throw new ServiceException("Cannot delete tag. Tag with such name does not exist.");
         }
-    }
-
-    private List<Link> getLinksForTagsList() throws ServiceException {
-        Link selfLink = linkTo(TagController.class).slash("tags").withSelfRel();
-        Link createLink = linkTo(methodOn(TagController.class).createTag(new TagDto(), null)).withRel("create-tag");
-        Link certsLink = linkTo(CertificateController.class).slash("certificates").withRel("all-certs").expand();
-        return Arrays.asList(selfLink, createLink, certsLink);
-    }
-
-    private List<Link> getLinksForSingleTag(TagDto dto) throws ServiceException {
-        Link selfLink = linkTo(TagController.class).slash("tags/" + dto.getName()).withSelfRel();
-        Link deleteLink1 = linkTo(methodOn(TagController.class).deleteTagByName(dto.getName(), null)).withRel("delete-by-name");
-        Link deleteLink2 = linkTo(methodOn(TagController.class).deleteTagById(String.valueOf(dto.getTagId()), null)).withRel("delete-by-id");
-        Link tagsLink = linkTo(methodOn(TagController.class).getTags(null, null)).withRel("all-tags");
-        return Arrays.asList(selfLink, deleteLink1, deleteLink2, tagsLink);
-    }
-
-    private Link linkToSingleTag(TagDto tag) throws ServiceException {
-        return linkTo(methodOn(TagController.class)
-                .getTag(tag.getName()))
-                .withRel("tag-" + tag.getTagId());
     }
 }

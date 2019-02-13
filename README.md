@@ -48,3 +48,7 @@ Transaction tests.
 CSRF protection.
 
 Added optional to service and some oauth scope protection
+
+Added option to buy certificate
+
+Added some new views

@@ -41,7 +41,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .logout().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/tags", "/tags/**", "/users", "/users/**")
-                        .access("#oauth2.hasScope('read')")    //todo buy certs
+                        .access("#oauth2.hasScope('read')")
 
                 .antMatchers(HttpMethod.GET, "/certificates", "/certificates/**").permitAll()
 
@@ -49,6 +49,9 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                         .access("#oauth2.hasScope('write')")
 
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
+
+                .antMatchers(HttpMethod.PATCH, "/certificates/**")
+                        .access("#oauth2.hasScope('write')")
 
                 .antMatchers(HttpMethod.DELETE, "/certificates/**", "/tags/**", "/users/**")
                         .access("#oauth2.hasScope('write')")

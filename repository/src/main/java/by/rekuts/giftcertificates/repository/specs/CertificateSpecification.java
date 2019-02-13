@@ -22,6 +22,7 @@ public class CertificateSpecification extends Specification {
     private Integer expirationDays;
     private List<Integer> tagsId = new ArrayList<>();
     private String searchKey;
+    private Integer userId;
 
     public CertificateSpecification() {}
 
@@ -44,6 +45,10 @@ public class CertificateSpecification extends Specification {
         }
         if (params.get("search") != null) {
             searchKey = params.get("search")[0];
+        }
+        if (params.containsKey("userId")) {
+            String userStringId = params.get("userId")[0];
+            userId = Integer.parseInt(userStringId);
         }
     }
 
@@ -87,6 +92,11 @@ public class CertificateSpecification extends Specification {
                             builder.like(root.get("name").as(String.class), "%" + searchKey + "%"),
                             builder.like(root.get("description").as(String.class), "%" + searchKey + "%")
                     )
+            );
+        }
+        if (userId != null) {
+            predicates.add(
+                    builder.equal(root.join("users"), userId)
             );
         }
         return predicates;
@@ -152,7 +162,7 @@ public class CertificateSpecification extends Specification {
         return tagsId;
     }
 
-    public void setTags(List<Integer> tagsId) {
+    public void setTagsId(List<Integer> tagsId) {
         this.tagsId = tagsId;
     }
 
@@ -162,5 +172,13 @@ public class CertificateSpecification extends Specification {
 
     public void setSearchKey(String searchKey) {
         this.searchKey = searchKey;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

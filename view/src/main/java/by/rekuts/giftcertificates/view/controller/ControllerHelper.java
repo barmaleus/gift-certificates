@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 class ControllerHelper {
+    public static final String PAGE_DEFAULT_VALUE = "0";
+    public static final String ITEM_DEFAULT_VALUE = "10";
 
     ResponseEntity deleteEntityById(CrudService service, String entityId, String csrfToken) {
         int id = Integer.parseInt(entityId);
