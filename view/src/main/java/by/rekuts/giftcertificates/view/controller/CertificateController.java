@@ -1,6 +1,7 @@
 package by.rekuts.giftcertificates.view.controller;
 
 import by.rekuts.giftcertificates.service.CertificateService;
+import by.rekuts.giftcertificates.service.PurchaseService;
 import by.rekuts.giftcertificates.service.ServiceException;
 import by.rekuts.giftcertificates.service.UserService;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
@@ -26,11 +27,13 @@ import static by.rekuts.giftcertificates.view.controller.HateoasLinksKeeper.*;
 public class CertificateController {
     private final CertificateService service;
     private final UserService userService;
+    private final PurchaseService purchaseService;
 
     @Autowired
-    public CertificateController(CertificateService service, UserService userService) {
+    public CertificateController(CertificateService service, UserService userService, PurchaseService purchaseService) {
         this.service = service;
         this.userService = userService;
+        this.purchaseService = purchaseService;
     }
 
     @GetMapping(value = "/certificates/{certId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -127,7 +130,7 @@ public class CertificateController {
             @PathVariable("certId") String certId, String csrfToken) throws ServiceException {
         int id = Integer.parseInt(certId);
         String selfUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        boolean certIsNotBoughtYet = userService.buyCertificate(selfUsername, id);
+        boolean certIsNotBoughtYet = purchaseService.buyCertificate(selfUsername, id);
         if (certIsNotBoughtYet) {
             HttpHeaders headers = new ControllerHelper().addHeadersToSimpleResponse(csrfToken);
 

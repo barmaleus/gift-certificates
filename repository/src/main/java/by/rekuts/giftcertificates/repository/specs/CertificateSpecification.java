@@ -96,7 +96,7 @@ public class CertificateSpecification extends Specification {
         }
         if (userId != null) {
             predicates.add(
-                    builder.equal(root.join("users"), userId)
+                    builder.equal(root.join("users").get("user"), userId)
             );
         }
         return predicates;

@@ -1,6 +1,7 @@
 package by.rekuts.giftcertificates.service;
 
 import by.rekuts.giftcertificates.service.converter.CertificateConverter;
+import by.rekuts.giftcertificates.service.converter.PurchaseConverter;
 import by.rekuts.giftcertificates.service.converter.TagConverter;
 import by.rekuts.giftcertificates.service.converter.UserConverter;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,11 @@ public class ServiceConfig {
     @Bean
     UserConverter getUserConverter() {
         return new UserConverter();
+    }
+
+    @Bean
+    PurchaseConverter getPurchaseConverter() {
+        return new PurchaseConverter();
     }
 
     @Bean

@@ -885,6 +885,110 @@
 					"response": []
 				},
 				{
+					"name": "Get user's certificates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "881caa02-cb77-4a69-b7ad-64a82850dece",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.login).to.eql(\"user1\");",
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/users/1/certificate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"users",
+								"1",
+								"certificate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User's purchase for exact certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b6c059ea-0529-44c6-8bca-9db02da213eb",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.login).to.eql(\"user1\");",
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/users/1/certificate/5/purchase",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"users",
+								"1",
+								"certificate",
+								"5",
+								"purchase"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create user",
 					"event": [
 						{

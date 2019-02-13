@@ -1,9 +1,11 @@
 package by.rekuts.giftcertificates.view.controller;
 
 import by.rekuts.giftcertificates.service.CertificateService;
+import by.rekuts.giftcertificates.service.PurchaseService;
 import by.rekuts.giftcertificates.service.ServiceException;
 import by.rekuts.giftcertificates.service.UserService;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
+import by.rekuts.giftcertificates.service.dto.PurchaseDto;
 import by.rekuts.giftcertificates.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -25,11 +27,13 @@ import static by.rekuts.giftcertificates.view.controller.HateoasLinksKeeper.*;
 public class UserController {
     private final UserService service;
     private final CertificateService certificateService;
+    private final PurchaseService purchaseService;
 
     @Autowired
-    public UserController(UserService service, CertificateService certificateService) {
+    public UserController(UserService service, CertificateService certificateService, PurchaseService purchaseService) {
         this.service = service;
         this.certificateService = certificateService;
+        this.purchaseService = purchaseService;
     }
 
     @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,8 +81,23 @@ public class UserController {
         List<CertificateDto> certificates = certificateService.getList(params, pageInt, itemInt);
         for(CertificateDto certificate : certificates) {
             certificate.add(linkToSingleCertificate(certificate));
+            certificate.add(purchaseLink(userDto, certificate));
         }
         return new Resources<>(certificates, links);
+    }
+
+    @GetMapping(value = "/users/{userId}/certificate/{certId}/purchase", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource> getUsersCertificatePurcase(
+            @PathVariable("userId") int userId,
+            @PathVariable("certId") int certId) throws ServiceException {
+        UserDto user = service.getUserById(userId);
+        CertificateDto certificate = certificateService.getCertById(certId);
+
+        Link userLink = linkToSingleUser(user);
+        Link certLink = linkToSingleCertificate(certificate);
+
+        PurchaseDto purchase = purchaseService.getList(userId, certId, null, null);
+        return new ResponseEntity<>(new Resource<>(purchase, userLink, certLink), HttpStatus.OK);
     }
 
     /**

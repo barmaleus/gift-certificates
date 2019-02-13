@@ -58,13 +58,22 @@ public class HateoasLinksKeeper {
         Link deleteLink = linkTo(methodOn(UserController.class).deleteUserById(String.valueOf(dto.getUserId()), null))
                 .withRel("delete-user");
         Link usersLink = linkTo(methodOn(UserController.class).getUsers(null, null)).withRel("all-users");
-        return Arrays.asList(selfLink, updateLink, deleteLink, usersLink);
+        Link usersCertificatesLink = linkTo(methodOn(UserController.class)
+                .getUser(dto.getUserId()))
+                .withRel("user-" + dto.getUserId());
+        return Arrays.asList(selfLink, updateLink, deleteLink, usersLink, usersCertificatesLink);
     }
 
-    static Link linkToSingleUser(UserDto user) throws ServiceException{
+    static Link linkToSingleUser(UserDto user) throws ServiceException {
         return linkTo(methodOn(UserController.class)
                 .getUser(user.getUserId()))
-                .withRel("tag-" + user.getUserId());
+                .withRel("user-" + user.getUserId());
+    }
+
+    static Link purchaseLink(UserDto user, CertificateDto certificateDto) throws ServiceException {
+        return linkTo(methodOn(UserController.class)
+                .getUsersCertificatePurcase(user.getUserId(), certificateDto.getCertificateId()))
+                .withRel("purchase-data");
     }
 
     //links for tags

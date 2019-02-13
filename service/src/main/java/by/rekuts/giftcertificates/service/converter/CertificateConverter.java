@@ -1,9 +1,10 @@
 package by.rekuts.giftcertificates.service.converter;
 
 import by.rekuts.giftcertificates.repository.domain.Certificate;
+import by.rekuts.giftcertificates.repository.domain.Purchase;
 import by.rekuts.giftcertificates.repository.domain.User;
-import by.rekuts.giftcertificates.repository.repos.UserRepository;
-import by.rekuts.giftcertificates.repository.specs.UserSpecification;
+import by.rekuts.giftcertificates.repository.repos.PurchaseRepository;
+import by.rekuts.giftcertificates.repository.specs.PurchaseSpecification;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 public class CertificateConverter implements CommonConverter<Certificate, CertificateDto> {
 
     @Autowired
-    private UserRepository userRepository;
+    private PurchaseRepository purchaseRepository;
 
     @Override
     public Certificate dtoConvert(CertificateDto certDto) {
@@ -38,6 +39,7 @@ public class CertificateConverter implements CommonConverter<Certificate, Certif
         } else {
             certDto.setUsers(cert.getUsers()
                     .stream()
+                    .map(Purchase::getUser)
                     .map(User::getId)
                     .collect(Collectors.toList()));
         }
@@ -59,15 +61,16 @@ public class CertificateConverter implements CommonConverter<Certificate, Certif
         if (certDto.getUsers() == null) {
             cert.setUsers(null);
         } else {
-            List<User> users = certDto.getUsers()
+            List<Purchase> purchaseList = certDto.getUsers()
                     .stream()
-                    .map(userId -> userRepository
-                            .getList(new UserSpecification(userId), null, null)
+                    .map(userId -> purchaseRepository
+                            .getList(new PurchaseSpecification(userId, certDto.getCertificateId()), null, null)
                             .stream()
                             .findFirst().orElse(null))
-                    .filter(Objects::nonNull)
+                    .filter(Objects::isNull)
                     .collect(Collectors.toList());
-            cert.setUsers(users);
+
+            cert.setUsers(purchaseList);
         }
         return cert;
     }

@@ -30,13 +30,8 @@ public class User implements Serializable {
 	@Column(nullable = false, name = "role")
 	private UserRole role;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(
-			name = "user_certificate",
-			joinColumns = { @JoinColumn(name = "user_id") },
-			inverseJoinColumns = { @JoinColumn(name = "certificate_id") }
-	)
-	private List<Certificate> certificates;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Purchase> certificates;
 
 	public User(int id, String login, String password) {
 		this.id = id;
@@ -84,11 +79,11 @@ public class User implements Serializable {
 		this.role = role;
 	}
 
-	public List<Certificate> getCertificates() {
+	public List<Purchase> getCertificates() {
 		return certificates;
 	}
 
-	public void setCertificates(List<Certificate> certificates) {
+	public void setCertificates(List<Purchase> certificates) {
 		this.certificates = certificates;
 	}
 

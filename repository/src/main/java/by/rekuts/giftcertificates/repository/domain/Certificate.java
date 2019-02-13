@@ -34,8 +34,8 @@ public class Certificate implements Serializable {
     @ManyToMany(mappedBy = "certificates", cascade = CascadeType.ALL)
     private List<Tag> tags;
 
-    @ManyToMany(mappedBy = "certificates", cascade = CascadeType.ALL)
-    private List<User> users;
+    @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL)
+    private List<Purchase> users;
 
     @PrePersist
     public void onPrePersist() {
@@ -111,11 +111,11 @@ public class Certificate implements Serializable {
         this.tags = tags;
     }
 
-    public List<User> getUsers() {
+    public List<Purchase> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(List<Purchase> users) {
         this.users = users;
     }
 
