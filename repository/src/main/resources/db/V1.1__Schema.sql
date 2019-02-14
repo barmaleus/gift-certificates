@@ -76,7 +76,9 @@ ALTER TABLE public.tag_certificate OWNER TO postgres;
 
 CREATE TABLE public.user_certificate (
     user_id integer NOT NULL,
-    certificate_id integer NOT NULL
+    certificate_id integer NOT NULL,
+    price numeric NOT NULL,
+    purchase_time timestamp(3) with time zone DEFAULT now() NOT NULL
 );
 
 ALTER TABLE public.user_certificate OWNER TO postgres;

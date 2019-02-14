@@ -1,6 +1,7 @@
 package by.rekuts.giftcertificates.repository.repos.impl;
 
 import by.rekuts.giftcertificates.repository.domain.Certificate;
+import by.rekuts.giftcertificates.repository.domain.Purchase;
 import by.rekuts.giftcertificates.repository.repos.CertificateRepository;
 import by.rekuts.giftcertificates.repository.specs.CertificateSpecification;
 import by.rekuts.giftcertificates.repository.specs.Specification;

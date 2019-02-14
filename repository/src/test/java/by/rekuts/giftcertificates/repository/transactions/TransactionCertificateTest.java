@@ -7,6 +7,7 @@ import by.rekuts.giftcertificates.repository.specs.CertificateSpecification;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,6 +25,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @ActiveProfiles("debug")
+@DirtiesContext
 @Transactional
 public class TransactionCertificateTest {
 
@@ -110,6 +112,7 @@ public class TransactionCertificateTest {
 
     @Test
     public void deleteCertificateRollback() {
+        System.out.println(repository.getList(new CertificateSpecification(71), null, null).get(0));
         repository.delete(71);
         assertNumCerts(count - 1);
         TestTransaction.end();

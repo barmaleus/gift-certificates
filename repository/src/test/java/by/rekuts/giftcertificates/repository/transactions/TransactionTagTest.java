@@ -97,12 +97,12 @@ public class TransactionTagTest {
         assertNumTags(count);
     }
 
-    protected int countRowsInTable(Object object) {
+    private int countRowsInTable(Object object) {
         Query query = entityManager.createQuery("SELECT count(t) FROM " + object.getClass().getSimpleName() + " t");
         return (int) (long) query.getSingleResult();
     }
 
-    protected void assertNumTags(int expected) {
-        assertEquals("Number of rows in the curreent table.", expected, countRowsInTable(new Tag()));
+    private void assertNumTags(int expected) {
+        assertEquals("Number of rows in the current table.", expected, countRowsInTable(new Tag()));
     }
 }

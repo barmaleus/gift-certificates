@@ -1165,6 +1165,57 @@
 						"description": "Run create user for receiving env variable 'userId' or write tagId yourself in which you assured."
 					},
 					"response": []
+				},
+				{
+					"name": "Get the most popular tag with price sum",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "06ffeda3-4ed0-41a7-ae0c-920a9fd308fc",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Returned right json-object\", function () {",
+									"    pm.expect(jsonData.login).to.eql(\"user1\");",
+									"});",
+									"",
+									"var xsrfCookie = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"xsrf-token\", xsrfCookie.value);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:1111/users/1/popular-tag",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "1111",
+							"path": [
+								"users",
+								"1",
+								"popular-tag"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

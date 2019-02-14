@@ -94,7 +94,6 @@ public class User implements Serializable {
 				", login='" + login + '\'' +
 				", password='" + password + '\'' +
 				", role=" + role +
-				", certificates=" + certificates +
 				'}';
 	}
 }
