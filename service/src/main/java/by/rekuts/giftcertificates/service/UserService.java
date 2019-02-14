@@ -1,5 +1,6 @@
 package by.rekuts.giftcertificates.service;
 
+import by.rekuts.giftcertificates.service.dto.TagDto;
 import by.rekuts.giftcertificates.service.dto.UserDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
