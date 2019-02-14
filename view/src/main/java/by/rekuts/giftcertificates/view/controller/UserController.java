@@ -6,6 +6,7 @@ import by.rekuts.giftcertificates.service.ServiceException;
 import by.rekuts.giftcertificates.service.UserService;
 import by.rekuts.giftcertificates.service.dto.CertificateDto;
 import by.rekuts.giftcertificates.service.dto.PurchaseDto;
+import by.rekuts.giftcertificates.service.dto.TagDto;
 import by.rekuts.giftcertificates.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +101,18 @@ public class UserController {
 
         PurchaseDto purchase = purchaseService.getList(userId, certId, null, null);
         return new ResponseEntity<>(new Resource<>(purchase, userLink, certLink), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/users/{userId}/popular-tag", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource> getUsersMostPopularTag(
+            @PathVariable("userId") int userId) throws ServiceException {
+        UserDto user = service.getUserById(userId);
+
+        Link userLink = linkToSingleUser(user);
+
+        Map.Entry<String, BigDecimal> mostPopularTag = service.getMostPopularUsersTag(userId);
+
+        return new ResponseEntity<>(new Resource<>(mostPopularTag, userLink), HttpStatus.OK);
     }
 
     /**

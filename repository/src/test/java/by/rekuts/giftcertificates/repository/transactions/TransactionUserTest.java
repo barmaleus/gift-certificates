@@ -99,7 +99,7 @@ public class TransactionUserTest {
     }
 
     @Test
-    public void deleteCertificateRollback() {
+    public void deleteUserRollback() {
         repository.delete(2);
         assertNumUsers(count - 1);
         TestTransaction.end();
@@ -107,7 +107,7 @@ public class TransactionUserTest {
     }
 
     @Test
-    public void deleteCertificateCommit() {
+    public void deleteUserCommit() {
         repository.delete(1);
 
         TestTransaction.flagForCommit();

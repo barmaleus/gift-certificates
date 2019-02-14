@@ -31,7 +31,7 @@ public class TagRepositoryImpl implements TagRepository {
     @Override
     public void update(Tag tag) {
         //do nothing
-        //delete the old tag and create a new one
+        //in case of update, delete the old tag and create a new one
     }
 
     @Override

@@ -1,12 +1,20 @@
 package by.rekuts.giftcertificates.service.impl;
 
+import by.rekuts.giftcertificates.repository.domain.Certificate;
+import by.rekuts.giftcertificates.repository.domain.Purchase;
+import by.rekuts.giftcertificates.repository.domain.Tag;
 import by.rekuts.giftcertificates.repository.domain.User;
 import by.rekuts.giftcertificates.repository.repos.CertificateRepository;
+import by.rekuts.giftcertificates.repository.repos.PurchaseRepository;
+import by.rekuts.giftcertificates.repository.repos.TagRepository;
 import by.rekuts.giftcertificates.repository.repos.UserRepository;
+import by.rekuts.giftcertificates.repository.specs.PurchaseSpecification;
 import by.rekuts.giftcertificates.repository.specs.UserSpecification;
 import by.rekuts.giftcertificates.service.ServiceException;
 import by.rekuts.giftcertificates.service.UserService;
+import by.rekuts.giftcertificates.service.converter.TagConverter;
 import by.rekuts.giftcertificates.service.converter.UserConverter;
+import by.rekuts.giftcertificates.service.dto.TagDto;
 import by.rekuts.giftcertificates.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,22 +26,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
+    private final PurchaseRepository purchaseRepository;
     private final CertificateRepository certificateRepository;
+    private final TagRepository tagRepository;
     private final UserConverter converter;
     private final PasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, CertificateRepository certificateRepository, UserConverter converter, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository repository, PurchaseRepository purchaseRepository, CertificateRepository certificateRepository, TagRepository tagRepository, UserConverter converter, PasswordEncoder encoder) {
         this.repository = repository;
+        this.purchaseRepository = purchaseRepository;
         this.certificateRepository = certificateRepository;
+        this.tagRepository = tagRepository;
         this.encoder = encoder;
         this.converter = converter;
     }
@@ -119,4 +131,36 @@ public class UserServiceImpl implements UserService {
                 .orElse(null);
     }
 
+    @Override
+    public Map.Entry<String, BigDecimal> getMostPopularUsersTag(Integer userId) {
+        UserDto user = getUserById(userId);
+        List<Purchase> purchaseList = purchaseRepository
+                .getList(new PurchaseSpecification(userId, null), null, null);
+
+        Map<Certificate, BigDecimal> certificateMap = purchaseList.stream()
+                .collect(Collectors.toMap(Purchase::getCertificate, Purchase::getPrice));
+
+        Map<Tag, BigDecimal> tagMap = new HashMap<>();
+
+        certificateMap.forEach((certificate, price) -> {
+            for(Tag tag : certificate.getTags()) {
+                if (tagMap.containsKey(tag)) {
+                    tagMap.put(tag, tagMap.get(tag).add(price));
+                } else {
+                    tagMap.put(tag, price);
+                }
+            }
+        });
+
+        Map.Entry<String, BigDecimal> maxEntry = new AbstractMap.SimpleEntry<>("There are no popular tags yet", BigDecimal.valueOf(-1));
+
+        for (Map.Entry<Tag, BigDecimal> entry : tagMap.entrySet()) {
+            if (entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = new AbstractMap.SimpleEntry<>(entry.getKey().getName(), entry.getValue());
+
+            }
+        }
+
+        return maxEntry;
+    }
 }
